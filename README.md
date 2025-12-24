@@ -60,9 +60,8 @@ I specialize in **Zero-to-One Architecture**: starting from the generation of em
 
 ## 🏗️ Featured Architecture: Zero-to-One ETL Pipeline
 
-This repository serves as a **Proof of Concept (PoC)** for a scalable data ingestion system. It automates the extraction of fragmented industry data into a single, intelligent dashboard.
+This repository serves as a **Proof of Concept (PoC)** for a scalable data ingestion system. The aim is to showcase high level data architecture, bottleneck design considerations (price, security, scope), documentation of roadblocks, and next step roadmaps of features in development. The main purpose of this is to show, not tell, my personal portfolio which serves as an open source resource contribution to others as as learning resource or to continue building on this framework themselves.
 
-### **The "Biotech to Cloud" Workflow**
 *(This diagram is live-rendered by GitHub using Mermaid.js)*
 
 ```mermaid
@@ -93,10 +92,6 @@ graph TD
     class A,B,C source;
 ```
 # System Design Highlights
-
-* **Extract:** Hybrid Web Scraping (Python) & API Fetching (Node.js).
-* **Load:** Serverless storage via **Vercel Blob** (MVP) with a roadmap to **Snowflake/DynamoDB**.
-* **Intelligence:** Integrated **RAG (Retrieval Augmented Generation)** to answer natural language queries about the data.
 
 ---
 
