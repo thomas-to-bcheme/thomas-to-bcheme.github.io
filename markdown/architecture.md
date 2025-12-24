@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     %% Nodes
     subgraph "Extract (Ingestion)"
@@ -26,3 +27,4 @@ graph TD
     %% Styles
     classDef source fill:#e1f5fe,stroke:#01579b,stroke-width:2px;
     class A,B,C source;
+```
