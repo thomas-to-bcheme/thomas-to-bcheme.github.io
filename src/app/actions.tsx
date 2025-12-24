@@ -1,8 +1,6 @@
 // src/app/actions.ts
 'use server' // 👈 This marks functions here as secure server-side code
 
-import { docClient } from "@/lib/db";
-import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { revalidatePath } from "next/cache";
 
 export async function addComment(formData: FormData) {
