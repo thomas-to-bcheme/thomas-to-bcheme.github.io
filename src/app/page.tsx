@@ -1,49 +1,44 @@
-import Image from "next/image";
-import { docClient } from "@/lib/db";
-import { ScanCommand } from "@aws-sdk/lib-dynamodb";
+// src/app/page.tsx
+import AiGenerator from "@/components/AiGenerator"; // 👈 Your client component
 
-// 1. Mark component as 'async' to fetch data server-side
-export default async function Home() {
-  
-  // 2. Use to get the actual data
-  const response = await docClient.send(new ScanCommand({
-    TableName: process.env.DYNAMODB_TABLE_NAME
-  }));
-  
-  // 3. Extract items safely
-  const comments = response.Items ?? [];
-
+export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        {/* ... (Your existing Image code) ... */}
-        
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            Thomas's Hello World.
-          </h1>
-          
-          {/* --- NEW SECTION: DISPLAY COMMENTS --- */}
-          <div className="w-full mt-8 border-t pt-8">
-            <h2 className="text-xl font-bold mb-4">Database Comments:</h2>
-            {comments.length === 0 ? (
-              <p className="text-gray-500">No comments found.</p>
-            ) : (
-              <ul className="space-y-4 text-left w-full">
-                {comments.map((comment, index) => (
-                  <li key={index} className="p-4 border rounded-lg shadow-sm bg-gray-50 dark:bg-zinc-900">
-                    {/* Replace 'comment.content' with your actual DynamoDB column names */}
-                    <p className="font-mono text-sm">{JSON.stringify(comment)}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          {/* ------------------------------------- */}
-
+    <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans selection:bg-blue-100 selection:text-blue-900">
+      
+      {/* --- HEADER --- */}
+      <header className="max-w-4xl mx-auto px-6 py-8 flex justify-between items-center">
+        <div className="font-bold text-xl tracking-tighter text-black dark:text-white">
+          THOMAS<span className="text-blue-600">.TO</span>
         </div>
+        <nav className="flex gap-4 text-sm font-medium text-zinc-500">
+          <a href="https://github.com/thomas-to-bcheme" target="_blank" className="hover:text-black dark:hover:text-white transition-colors">GitHub</a>
+          <a href="src/docs/Thomas_To_Resume.pdf" className="hover:text-black dark:hover:text-white transition-colors">Resume</a>
+        </nav>
+      </header>
+
+      <main className="max-w-2xl mx-auto px-6 pb-20">
         
-        {/* ... (Your existing Buttons code) ... */}
+        {/* --- HERO SECTION --- */}
+        <section className="pt-20 pb-16 space-y-6">
+          <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-6xl">
+            Full Stack. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">
+              Serverless.
+            </span>
+          </h1>
+          <p className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            Welcome to my live portfolio. This page is rendered dynamically by 
+            <strong className="text-black dark:text-white font-semibold"> Next.js </strong> 
+            and showcases interacive AI components.
+          </p>
+        </section>
+
+        {/* --- AI GENERATOR SECTION --- */}
+        <section className="bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-zinc-200 dark:border-zinc-800 overflow-hidden mb-8">
+            {/* The interactive client logic lives inside this component */}
+            <AiGenerator /> 
+        </section>
+
       </main>
     </div>
   );
