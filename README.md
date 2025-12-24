@@ -9,7 +9,7 @@
   <a href="https://thomas-to-bcheme-github-io.vercel.app/">
     <img src="https://img.shields.io/badge/Portfolio-Visit%20Live%20Site-2ea44f?style=for-the-badge&logo=vercel&logoColor=white" alt="Portfolio" />
   </a>
-  <a href="src/docs/resume.pdf">
+  <a href="src/docs/Thomas_To_Resume.pdf">
     <img src="https://img.shields.io/badge/Resume-Download%20PDF-0078D4?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="Resume" />
   </a>
   <a href="https://www.linkedin.com/in/thomas-to-ucdavis/">
@@ -23,19 +23,22 @@
   <br />
 
   <p align="center">
-    <b>Bridging "Physical Reality" (Biotech/IoT) with "Cloud Intelligence" (AI/Snowflake).</b>
+    <b>Bridging "Physical Reality" (Biotech/IoT) with "Cloud Architecture" (AI/Snowflake).</b>
     <br />
-    Building secure, ROI-driven AI systems that safeguard assets and automate the mundane.
+    Building secure, ROI-driven (AI/ML) systems that safeguard assets and automate the mundane.
   </p>
 </div>
 
+## 📂 What You'll Find in This Repo
+
+Recruiters and Engineers can explore the following codebases linked here to verify my "Fullstack" claims:
+
+**[Live Portfolio (Next.js)](https://thomas-to-bcheme-github-io.vercel.app/)**: My interactive resume and project showcase, deployed via Vercel.
 ## 👨‍💻 About Me
 
-I am a **Founding AI Engineer** and **Data Architect** with a unique background in **Biochemical Engineering**. Unlike traditional software engineers, I started on the manufacturing floor, which gives me deep empathy for operational "physical reality."
+I am a **Founding Fullstack (AI/ML) Engineer** with a background in **Biochemical Engineering**. This background has allowed me to experience first-hand, on-the-floor and off-the-floor manufacturing experiences to design end-to-end architecture and data models to reflect "physical reality" starting from the generation of emperically obtained data, digitized into enterprise systems, (ETL/ELT) data pipelines from the enterprise system for enterprise data utilization which includes but is not limited to: data science (classical & agentic machine learning), data analytics, and automated applications.
 
-I specialize in **reverse-engineering** complex, legacy workflows and transforming them into modern, scalable cloud architectures. My work focuses on **tangible ROI**—building systems that don't just look cool but actively **safeguard millions in inventory**, **reduce operational costs**, and **democratize data access** for non-technical executives.
-
-Currently, I am bridging the gap between **Biological Intelligence** and **Artificial Intelligence**, building agents that understand the nuances of wet-lab constraints while leveraging the power of LLMs.
+I bridge the gap between manual operations and enterprise cloud architecture. I've seen it first-hand & on-the-floor, how even simplistic algorithms can automate manual workflows. Now with Agentic methods, I combine classical fullstack methods with agentic AI/ML solutions to drive reality into the future.
 
 ---
 
@@ -54,28 +57,21 @@ Currently, I am bridging the gap between **Biological Intelligence** and **Artif
 
 Here is what you will find detailed in my [Resume](src/docs/Thomas_To_Resume.pdf):
 
-### **Founding Data Engineer | Canventa Life Sciences**
-* **The "Analyst Bottleneck" Solution:** Architected a RAG AI Agent (Snowflake + LLM) that reduced executive time-to-insight by **99% (3 days to <1 min)**.
-* **Knowledge Digitization:** Augmented internal knowledge retrieval by fine-tuning models on Confluence data, improving engineer learning rates by **80%**.
-* **Operational Resilience:** Deployed a cloud-based calculation engine that reduced risk and forecasted production with **80% accuracy**, directly safeguarding inventory.
+### **Founding Fullstack Engineer | Canventa Life Sciences**
+* Architected a revenue optimization system using Snowflake to integrate a predictive machine learning model with a Retrieval Augmented Generative (RAG) AI agent to reduce stakeholder decision-making from hours to minutes.
+* Augmented natural knowledge by enriching RAG fine-tuning with Atlassian (Confluence) to enhance GenAI (data-to-text, text-to-image) context improving learning rate up to 80% (Wright’s Law: Stanford-B model).
+* Deployed in-house fullstack DevOps SaaS on GCP via CI/CD, converting serial to concurrent workflows reducing daily calculation time by 87% (-40 min), minimized calculation risk, and forecasted production within 3 of actual (pending public release on Vercel Portfolio).
+* Engineered in-house Material Management processes to reduce $200k waste and prevented $2M inventory stockout.
 
 ### **Founder | Proprietary FinTech**
-* **High-Frequency Trading:** Designed a low-latency (<50ms) Python trading agent running on **IoT edge devices (Raspberry Pi/AntMiner)**.
-* **Automated Arbitrage:** Solved market gaps between brokerages and exchanges (Coinbase) using agentic workflows that operate 24/7 with **99.9% uptime**.
+* Deployed an Exchange Trade Fund (ETF) solution to market gaps across banks’ brokerages to Fidelity or Vanguard.
 
-### **Process & Research Engineering | Genentech & UC Davis**
-* **Cost Reduction:** Optimized biological models using numerical methods to identify **$63.2M** in potential savings.
-* **Scale:** Validated process improvement models on datasets exceeding **300k+ datapoints**.
-
+### **Research Engineer | UC Davis**
+* **Nandi/McDonald Lab:** Optimized biological models using numerical methods to identify **$63.2M** in potential savings.
+* **Wan Lab:** Quantified organoid growth using **Python (OpenCV, ImageJ, Fiji)** for image processing analysis.
+* **Siegel Lab:** Published novel variants using pyRosetta , pyMol , and Benchling with wet-lab techniques to biomanufacture
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## 📂 What You'll Find in This Repo
-
-Recruiters and Engineers can explore the following codebases linked here to verify my "Fullstack" claims:
-
-1.  **[Live Portfolio (Next.js)](https://thomas-to-bcheme-github-io.vercel.app/)**: My interactive resume and project showcase, deployed via Vercel.
-2.  **AI Agents (Coming Soon)**: Python/LangChain implementations of my RAG architectures.
-3.  **Data Pipelines**: Examples of dbt models and SQL transformations used for revenue optimization.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
