@@ -3,19 +3,21 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import { awsCredentialsProvider } from "@vercel/oidc-aws-credentials-provider";
 
-const isDev = process.env.NODE_ENV === "development";
-
 const client = new DynamoDBClient({
-  region: "us-east-1",
-  credentials: isDev
+  region: "us-west-2",
+  // The Switch: Check if we are in 'development' (Localhost)
+  credentials: process.env.NODE_ENV === "development"
     ? {
-        // Localhost: Use standard keys from .env.local
+        // 🟢 LOCALHOST: Use keys from .env.local
         accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+        // Only include sessionToken if using temporary 'ASIA' keys
+        sessionToken: process.env.AWS_SESSION_TOKEN || undefined, 
       }
     : awsCredentialsProvider({
-        // Production (Vercel): Use OIDC
-        roleArn: process.env.AWS_ROLE_ARN,
+        // 🔴 PRODUCTION: Use Vercel OIDC
+        roleArn: process.env.AWS_ROLE_ARN || "",
+        region: "us-west-2",
       }),
 });
 
