@@ -114,16 +114,38 @@ To bypass the Vercel scheduling limit, we utilize the **GitHub Action -> Vercel 
 *Result:* We achieve high-frequency updates using GitHub's scheduler, bypassing Vercel's Cron limits entirely.
 To ensure the system never hits a "Hard Stop," we calculate the safe frequency based on Vercel's daily limit of **100 deployments**.
 
-### The Calculation
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Deployment Frequency & Risk Assessment
+
+## 1. Overview
+This document analyzes the operational risks and potential cost bottlenecks associated with automated deployment frequencies on the Vercel platform.
+
+**The Bottleneck:** The platform imposes a hard limit of **100 deployments per rolling 24-hour period**. Exceeding this limit results in an immediate **"Deployment Block,"** preventing critical hotfixes and manual updates until the rolling window clears.
+
+**The Financial Risk:** High-frequency deployment strategies (e.g., every 15 minutes) not only risk hitting the hard cap but also exponentially consume **Build Minutes**. While the primary constraint is the count limit, excessive build duration will trigger overage charges on Pro plans or suspension on Free tiers.
+
+---
+
+## 2. Visual Analysis: Consumption vs. Limits
+
+The chart below visualizes the deployment consumption against the platform's hard limit. The "Danger Zone" begins where automated usage consumes the safety buffer required for manual intervention.
 
 ```mermaid
 xychart-beta
-    title "Daily Deployment Consumption vs Limits"
-    x-axis [1x a day (24hr), 2x a day (12hr), 6h, 3h, Hourly, 30m, 15m]
+    title "Daily Deployment Consumption vs Hard Limit (100)"
+    x-axis [24hr, 12hr, 6hr, 3hr, 1hr, 30m, 15m]
     y-axis "Deployments per Day" 0 --> 100
     bar [1, 2, 4, 8, 24, 48, 96]
     line [100, 100, 100, 100, 100, 100, 100]
 ```
+
+## 3. Mathematical Risk Model
+
+To quantify operational stability, we define the **Risk Factor ($R$)** as the percentage of the daily limit consumed by automation.
+
+### The Formulas
+
 $$
 \text{Let } T = \text{Interval in Minutes}
 $$
@@ -136,6 +158,9 @@ $$
 \text{Risk Factor } (R) = \left( \frac{U}{L_{max}} \right) \times 100\%
 $$
 
+### Risk Condition Logic
+We define three operational states based on the Risk Factor ($R$). A system is considered "Unstable" if it consumes the 20% buffer reserved for manual hotfixes.
+
 $$
 \text{Condition:} \quad
 \begin{cases} 
@@ -145,12 +170,20 @@ $$
 \end{cases}
 $$
 
+### Example Calculation (15-Minute Interval)
+Running a deployment every 15 minutes utilizes **96%** of the daily capacity immediately:
+
 $$
-\text{Example at } T=15\text{min}: \quad R = \left( \frac{96}{100} \right) \times 100\% = \mathbf{96\%} \quad (\text{CRITICAL})
+\text{At } T=15\text{min}: \quad R = \left( \frac{96}{100} \right) \times 100\% = \mathbf{96\%} \quad (\text{CRITICAL})
 $$
 
-### Optimization: The Maximum allowable Risk Threshold
-To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80\% of the daily capacity:
+*Result: Only 4 slots remain for manual intervention. This is operationally negligent.*
+
+---
+
+## 4. Optimization: The Maximum Allowable Frequency
+
+To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80% of the daily capacity (leaving exactly 20 slots for engineers):
 
 $$
 \text{Target Usage } (U_{safe}) = L_{max} \times 0.80 = 80 \text{ deployments}
@@ -164,12 +197,14 @@ $$
 T_{safe} = \frac{1440}{80} = \mathbf{18 \text{ minutes}}
 $$
 
-**Result:** Setting the interval to **18 minutes** maximizes frequency while strictly maintaining the 20\% safety buffer. to allow for 20 deployments to maintain the codebase without  interrupting the deployed service.
+**Result:** An interval of **18 minutes** is the mathematical hard limit for safety.
 
-### Safe Maximum Frequency Recommendations:
-### Risk Comparison: Hourly vs. 30 Minutes
+---
 
-The following table compares the capacity impact of running deployments on an hourly basis versus every 30 minutes against the Vercel hard limit ($L_{max}=100$).
+## 5. Strategic Recommendation
+
+### Comparison: Hourly vs. 30 Minutes
+The following table compares the capacity impact of standard cron schedules against the platform hard limit ($L_{max}=100$).
 
 | Metric | Hourly ($60$ min) | 30 Minutes |
 | :--- | :--- | :--- |
@@ -178,7 +213,7 @@ The following table compares the capacity impact of running deployments on an ho
 | **Status** | ✅ **SAFE** | ⚠️ **CAUTION** |
 | **Buffer Remaining** | $76$ slots | $52$ slots |
 
-#### Mathematical Proof
+### Mathematical Proof
 
 **Case A: Hourly Schedule**
 $$
@@ -196,8 +231,11 @@ $$
 R_{30} = \left( \frac{1440 / 30}{100} \right) \times 100\% = \mathbf{48\%}
 $$
 
-> **Note:** While 30-minute intervals are technically "Safe" (under the 80% threshold), they consume nearly half of the daily allowance ($48\%$), leaving less room for burst activity compared to the Hourly strategy ($24\%$).
-
+### Final Decision: Hourly Frequency
+We recommend an **Hourly (60-minute)** schedule.
+* **Cost:** $0.00 (Free/Included).
+* **Capacity Used:** 24%.
+* **Rationale:** The 30-minute schedule consumes nearly half the daily allowance (48%). On days with high manual development activity, the combined load (Automation + Manual) risks hitting the 100-deploy limit, triggering a denial of service for the development team.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
