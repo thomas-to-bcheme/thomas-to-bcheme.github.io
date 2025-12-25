@@ -115,51 +115,89 @@ To bypass the Vercel scheduling limit, we utilize the **GitHub Action -> Vercel 
 To ensure the system never hits a "Hard Stop," we calculate the safe frequency based on Vercel's daily limit of **100 deployments**.
 
 ### The Calculation
-* **Limit:** $100$ Deployments / $24$ Hours.
-* **Safety Buffer:** Leave $20\%$ headroom for manual hotfixes/commits ($20$ deploys).
-* **Available Slots:** $80$ Deployments / $24$ Hours.
-
-**Formula:**
-$$\text{Available Slots} = L \times (1 - B)$$
-
-Where:
-* $L = 100$ (Daily Limit)
-* $B = 0.20$ (Safety Buffer)
-* Result: $80$ available automated slots per day.
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0070f3', 'secondaryColor': '#ff0000', 'tertiaryColor': '#fff'}}}%%
-gantt
-    title Vercel Deployment Consumption (Daily Limit: 100)
-    dateFormat X
-    axisFormat %s
-    
-    section Safe Zone (0-80)
-    Daily (1)           : 0, 1
-    Hourly (24)         : 0, 24
-    Every 30m (48)      : 0, 48
-    
-    section Danger Zone (80-100)
-    Every 15m (96)      : crit, 0, 96
-    HARD LIMIT (100)    : milestone, 100, 100 
-```
 
 ```mermaid
 xychart-beta
     title "Daily Deployment Consumption vs Limits"
-    x-axis [Daily, 12h, 6h, 3h, Hourly, 30m, 15m]
+    x-axis [1x a day (24hr), 2x a day (12hr), 6h, 3h, Hourly, 30m, 15m]
     y-axis "Deployments per Day" 0 --> 100
     bar [1, 2, 4, 8, 24, 48, 96]
-    line [80, 80, 80, 80, 80, 80, 80]
+    line [100, 100, 100, 100, 100, 100, 100]
 ```
+$$
+\text{Let } T = \text{Interval in Minutes}
+$$
 
-### Recommendation
-**Safe Maximum Frequency: Hourly (24 Deployments/Day)**
+$$
+\text{Daily Usage } (U) = \frac{1440 \text{ min}}{T}
+$$
 
-* **Cost:** $0.00 (Free).
-* **Capacity Used:** 24% of daily limit.
-* **Risk:** Extremely Low. Even if multiple commits occur, the rolling window will easily absorb 24 automated deploys plus manual work.
+$$
+\text{Risk Factor } (R) = \left( \frac{U}{L_{max}} \right) \times 100\%
+$$
 
-**Warning:** Do **not** exceed a frequency of **Every 15 Minutes** (96 deploys/day). This creates a "Red Zone" risk where a single manual commit could lock your project for 24 hours.
+$$
+\text{Condition:} \quad
+\begin{cases} 
+      R \leq 80\% & \text{SAFE (Green)} \\
+      80\% < R < 100\% & \text{CRITICAL (Red)} \\
+      R \geq 100\% & \text{FAILURE (Black)} 
+\end{cases}
+$$
+
+$$
+\text{Example at } T=15\text{min}: \quad R = \left( \frac{96}{100} \right) \times 100\% = \mathbf{96\%} \quad (\text{CRITICAL})
+$$
+
+### Optimization: The Maximum allowable Risk Threshold
+To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80\% of the daily capacity:
+
+$$
+\text{Target Usage } (U_{safe}) = L_{max} \times 0.80 = 80 \text{ deployments}
+$$
+
+$$
+T_{safe} = \frac{1440 \text{ min}}{U_{safe}}
+$$
+
+$$
+T_{safe} = \frac{1440}{80} = \mathbf{18 \text{ minutes}}
+$$
+
+**Result:** Setting the interval to **18 minutes** maximizes frequency while strictly maintaining the 20\% safety buffer. to allow for 20 deployments to maintain the codebase without  interrupting the deployed service.
+
+### Safe Maximum Frequency Recommendations:
+### Risk Comparison: Hourly vs. 30 Minutes
+
+The following table compares the capacity impact of running deployments on an hourly basis versus every 30 minutes against the Vercel hard limit ($L_{max}=100$).
+
+| Metric | Hourly ($60$ min) | 30 Minutes |
+| :--- | :--- | :--- |
+| **Daily Deploys ($U$)** | $24$ | $48$ |
+| **Risk Factor ($R$)** | $24\%$ | $48\%$ |
+| **Status** | ✅ **SAFE** | ⚠️ **CAUTION** |
+| **Buffer Remaining** | $76$ slots | $52$ slots |
+
+#### Mathematical Proof
+
+**Case A: Hourly Schedule**
+$$
+T = 60 \text{ min}
+$$
+$$
+R_{60} = \left( \frac{1440 / 60}{100} \right) \times 100\% = \mathbf{24\%}
+$$
+
+**Case B: 30-Minute Schedule**
+$$
+T = 30 \text{ min}
+$$
+$$
+R_{30} = \left( \frac{1440 / 30}{100} \right) \times 100\% = \mathbf{48\%}
+$$
+
+> **Note:** While 30-minute intervals are technically "Safe" (under the 80% threshold), they consume nearly half of the daily allowance ($48\%$), leaving less room for burst activity compared to the Hourly strategy ($24\%$).
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
