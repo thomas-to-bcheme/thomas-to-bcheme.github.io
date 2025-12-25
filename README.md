@@ -118,8 +118,7 @@ To ensure the system never hits a "Hard Stop," we calculate the safe frequency b
 
 ## Deployment Frequency & Risk Assessment
 
-## 1. Overview
-This document analyzes the operational risks and potential cost bottlenecks associated with automated deployment frequencies on the Vercel platform.
+The following analyzes the operational risks and potential cost bottlenecks associated with automated deployment frequencies on the Vercel platform.
 
 **The Bottleneck:** The platform imposes a hard limit of **100 deployments per rolling 24-hour period**. Exceeding this limit results in an immediate **"Deployment Block,"** preventing critical hotfixes and manual updates until the rolling window clears.
 
@@ -127,7 +126,7 @@ This document analyzes the operational risks and potential cost bottlenecks asso
 
 ---
 
-## 2. Visual Analysis: Consumption vs. Limits
+## Consumption vs. Limits
 
 The chart below visualizes the deployment consumption against the platform's hard limit. The "Danger Zone" begins where automated usage consumes the safety buffer required for manual intervention.
 
@@ -140,7 +139,7 @@ xychart-beta
     line [100, 100, 100, 100, 100, 100, 100]
 ```
 
-## 3. Mathematical Risk Model
+## Mathematical Risk Model
 
 To quantify operational stability, we define the **Risk Factor ($R$)** as the percentage of the daily limit consumed by automation.
 
@@ -164,9 +163,9 @@ We define three operational states based on the Risk Factor ($R$). A system is c
 $$
 \text{Condition:} \quad
 \begin{cases} 
-      R \leq 80\% & \text{SAFE (Green)} \\
-      80\% < R < 100\% & \text{CRITICAL (Red)} \\
-      R \geq 100\% & \text{FAILURE (Black)} 
+   R \leq 80\% & \text{SAFE} \\
+   80\% < R < 100\% & \text{CRITICAL} \\
+   R \geq 100\% & \text{FAILURE} 
 \end{cases}
 $$
 
@@ -181,7 +180,7 @@ $$
 
 ---
 
-## 4. Optimization: The Maximum Allowable Frequency
+## Optimization: The Maximum Allowable Frequency
 
 To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80% of the daily capacity (leaving exactly 20 slots for engineers):
 
@@ -198,10 +197,6 @@ T_{safe} = \frac{1440}{80} = \mathbf{18 \text{ minutes}}
 $$
 
 **Result:** An interval of **18 minutes** is the mathematical hard limit for safety.
-
----
-
-## 5. Strategic Recommendation
 
 ### Comparison: Hourly vs. 30 Minutes
 The following table compares the capacity impact of standard cron schedules against the platform hard limit ($L_{max}=100$).
@@ -231,11 +226,10 @@ $$
 R_{30} = \left( \frac{1440 / 30}{100} \right) \times 100\% = \mathbf{48\%}
 $$
 
-### Final Decision: Hourly Frequency
-We recommend an **Hourly (60-minute)** schedule.
-* **Cost:** $0.00 (Free/Included).
-* **Capacity Used:** 24%.
-* **Rationale:** The 30-minute schedule consumes nearly half the daily allowance (48%). On days with high manual development activity, the combined load (Automation + Manual) risks hitting the 100-deploy limit, triggering a denial of service for the development team.
+### Final Decision
+30 Minutes during active development and maintenace of tools while under continous deployment and allow for continual uptime for users to interact with the production server upto 20 minutes when the project life cycle has reached it's Stewardship phase and is no longer undergoing development of new features given the (financial) constraints previously mentioned.
+
+An additional layer of security for risk migitation can be to omit triggering changes to deploy and develop in an local enviornment when working in the backend.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -266,7 +260,7 @@ flowchart TD
     classDef frontend fill:#bfb,stroke:#333,stroke-width:2px;
 
     subgraph Sources [Data Sources]
-        Web[Web Scraping Targets]:::external
+        Web[GitHub]:::external
         API[3rd Party APIs]:::external
     end
 
@@ -277,8 +271,8 @@ flowchart TD
     end
 
     subgraph Cloud_Storage [Cloud Storage / Database]
-        Blob[(Vercel Blob Store)]:::storage
-        DynamoDB[("AWS DynamoDB (Future/Blocked)")]:::storage
+        Blob[(Vercel Edge Config)]:::storage
+        DynamoDB[("AWS DynamoDB (Failed)")]:::storage
         style DynamoDB stroke-dasharray: 5 5
     end
 
@@ -289,10 +283,9 @@ flowchart TD
 
     %% Flows
     Cron --"Triggers every 15m"--> Script
-    Script --"EXTRACT (Cheerio/Puppeteer)"--> Web
-    Script --"EXTRACT (Fetch)"--> API
+    Script --"EXTRACT (GitHub)"--> Web
+    Script --"EXTRACT (3rd Party API)"--> API
     Web & API --"Raw Data"--> Transform
-    Transform --"TRANSFORM"--> Transform
     Transform --"LOAD (Put Command)"--> Blob
     
     Blob --"Read JSON"--> NextJS
