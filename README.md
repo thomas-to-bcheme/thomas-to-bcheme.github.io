@@ -2,7 +2,7 @@
 
 <div align="center">
 
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0d1117&height=220&section=header&text=Thomas%20To&fontSize=70&fontColor=ffffff&desc=Founding%20Fullstack%20Engineer%20%7C%20Biotech%20Architecture%20%7C%20Agentic%20AI&descAlign=50&descAlignY=65" width="100%"/>
+  <img src="https://capsule-render.vercel.app/api?type=waving&height=300&color=gradient&text=Thomas%20To&section=header&reversal=true&textBg=false&animation=fadeIn&desc=Agentic%20Engineer:%20Protein%20Design,%20Biomanufacturing,%20Data,%20Software&descSize=25&descAlignY=65" width="100%"/>
 
   <br />
 
@@ -21,21 +21,19 @@
 
 ## 👨‍💻 Executive Summary
 
-This repository serves as a **Proof of Concept (PoC)** for a scalable data ingestion system. The aim is to showcase high level data architecture, bottleneck design considerations (price, security, scope), documentation of roadblocks, and next step roadmaps of features in development. 
+This repository serves as a **Proof of Concept** for a real-time data ingestion system. The aim is to showcase data architecture, design considerations, risk assessment, documentation, and roadmap of features in development. 
 
-The main purpose of this is to ***show, not tell, my personal portfolio*** and serves as an open source resource to others as  learning resource or to continue building on this framework themselves.
+The purpose of this is to ***show, not tell, my personal portfolio*** and serves as an open source resource to others as a learning resource or to continue building on this framework themselves.
 
 ## 🤖 About Me
 
-I am a **Founding Fullstack (AI/ML) Engineer** with a background in **Biochemical Engineering**. This background has allowed me to experience first-hand, on-the-floor and off-the-floor manufacturing experiences to design end-to-end architecture and data models to reflect "physical reality."
+I am a **Founding Fullstack (AI/ML) Engineer** with a background in **Biochemical Engineering**. This background has allowed me to experience first-hand, on-the-floor and off-the-floor experiences to design end-to-end architecture and data models to reflect "physical reality". From the generation of empirically obtained data, digitized into enterprise systems (ETL/ELT), and utilized for **Agentic Machine Learning**, data analytics, and automated applications.
 
-Experienced with **Zero-to-One Architecture**: starting from the generation of empirically obtained data, digitized into enterprise systems (ETL/ELT), and utilized for **Agentic Machine Learning**, data analytics, and automated applications.
-
-> **Core Philosophy:** "Even simplistic algorithms can automate manual workflows. Now with Agentic methods, I combine classical fullstack methods with agentic AI/ML solutions to drive reality into the future."
+> **"We've seen how even simplistic algorithms can automate manual workflows. Now with Agentic methods, I combine classical fullstack methods with agentic AI/ML solutions to drive reality into the future."**
+> As of Dec 2025, I have taken on reaching out to protein academics to support GenAI of novel designs leveraging my formal background. Working in industry with tech during the day and protein design by night.
 
 
 ## 🛠 Tech Stack & Core Competencies
-
 | **🤖 AI & Agentic Systems** | **📊 Data & Analytics** | **💻 Full Stack & API** | **☁️ Cloud, DevOps & IoT** |
 | :--- | :--- | :--- | :--- |
 | **LangChain** | **Snowflake** | **Python** | **Google Cloud** |
@@ -47,28 +45,6 @@ Experienced with **Zero-to-One Architecture**: starting from the generation of e
 ### 🧬 Bio-Computation Tools
 * **Molecular Modeling:** pyRosetta, pyMol, Benchling
 * **Computer Vision:** ImageJ, Fiji, OpenCV
-
----
-
-[🏠 Home](/README.md) | [🏗️ Architecture](#Project_Architecture) | [🚀 Deployment](deployment)
-
----
-<details>
-  <summary><b>📚 Table of Contents</b></summary>
-  <ol>
-    <li><a href="#executive-summary">Executive Summary</a></li>
-    <li>
-      <a href="#architecture">Featured Architecture</a>
-      <ul>
-        <li><a href="#system-design">System Design Highlights</a></li>
-      </ul>
-    </li>
-    <li><a href="#tech-stack">Tech Stack & Core Competencies</a></li>
-    <li><a href="#experience">Experience Highlights</a></li>
-    <li><a href="#documentation">Design & Documentation (GxP)</a></li>
-    <li><a href="#connect">Connect With Me</a></li>
-  </ol>
-</details>
 
 --- 
 
@@ -85,8 +61,8 @@ This document outlines the strategic design choices to minimize cost while maxim
 | :--- | :--- | :--- | :--- |
 | **Git & GitHub** (Version Control + "Database") | **React** (UI Library) | **Vercel Blob** (Object Storage) | **Gemini API** (GenAI Logic) |
 | **Vercel** (Edge Hosting & Deployment) | **TypeScript** (Type Safety) | **AWS DynamoDB** (NoSQL / Roadmap) | **Hugging Face** (Model Inference) |
-| **GitHub Actions** (CI/CD & CRON Workers) | **Next.js** (Server Components) | **Node.js** (ETL Scripting) | **Coinbase API** (Fintech Data) |
-| **Markdown** (Documentation as Code) | **Tailwind CSS** (Styling) | **OpenSSH** (Secure Auth) | **REST** (public-apis) |
+| **GitHub Actions** (CI/CD & CRON Workers) | **Next.js** (Server Components) | **Node.js** (ETL Scripting) | **Open API** (Coincap) |
+| **Markdown** (Documentation as Code) | **Tailwind CSS** (Styling) | **OpenSSH** (Secure Auth) | **RESTful API** (public-apis) |
 
 ---
 
@@ -103,6 +79,8 @@ This document outlines the strategic design choices to minimize cost while maxim
 | **Resource Access** | Full VM (Filesystem, CLI, Docker) | HTTP Endpoint only (Serverless) |
 | **Overages** | N/A (Always free for public) | **None** (Hard stop at limit) |
 
+**The Bottleneck:** The platform imposes a hard limit of **100 deployments per rolling 24-hour period**. Exceeding this limit results in an immediate **"Deployment Block,"** preventing critical hotfixes and manual updates until the rolling window clears.
+
 ### The "Vercel-Pinger" Solution (Technical Hack)
 To bypass the Vercel scheduling limit, we utilize the **GitHub Action -> Vercel Webhook** pattern:
 1.  **Schedule:** Set GitHub Action.
@@ -110,20 +88,14 @@ To bypass the Vercel scheduling limit, we utilize the **GitHub Action -> Vercel 
 3.  **Trigger:** GitHub commits the new data file (`data.json`) to the repo.
 4.  **Deploy:** The commit automatically triggers a Vercel deployment.
 
-*Result:* We achieve high-frequency updates using GitHub's scheduler, bypassing Vercel's Cron limits entirely.
+**Result:** We achieve high-frequency updates using GitHub's scheduler, bypassing Vercel's Cron limits entirely.
 To ensure the system never hits a "Hard Stop," we calculate the safe frequency based on Vercel's daily limit of **100 deployments**.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
+
 ## Deployment Frequency & Risk Assessment
-
-The following analyzes the operational risks and potential cost bottlenecks associated with automated deployment frequencies on the Vercel platform.
-
-**The Bottleneck:** The platform imposes a hard limit of **100 deployments per rolling 24-hour period**. Exceeding this limit results in an immediate **"Deployment Block,"** preventing critical hotfixes and manual updates until the rolling window clears.
-
-**The Financial Risk:** High-frequency deployment strategies (e.g., every 15 minutes) not only risk hitting the hard cap but also exponentially consume **Build Minutes**. While the primary constraint is the count limit, excessive build duration will trigger overage charges on Pro plans or suspension on Free tiers.
-
-## Consumption vs. Limits
 
 The chart below visualizes the deployment consumption against the platform's hard limit. The "Danger Zone" begins where automated usage consumes the safety buffer required for manual intervention.
 
@@ -162,13 +134,13 @@ $$
 \text{At } T=15\text{min}: \quad R = \left( \frac{96}{100} \right) \times 100\% = \mathbf{96\%} \quad (\text{CRITICAL})
 $$
 
-*Result: Only 4 slots remain for manual intervention. This is operationally negligent.*
+*Result: Only 4 slots remain for maintenance*
 
 ---
 
 ## Optimized to the Maximum Allowable Risk Frequency
 
-To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80% of the daily capacity (leaving exactly 20 slots for engineers):
+To determine the fastest possible safe interval ($T_{safe}$) that utilizes 80% of the daily capacity:
 
 $$
 \text{Target Usage } (U_{safe}) = L_{max} \times 0.80 = 80 \text{ deployments}
@@ -201,17 +173,23 @@ An additional layer of security for risk migitation can be used to omit deployin
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+---
+
 ### Database:
 
 This project was initially scoped for the use of AWS database services; opting for dynamoDB, to support both structured and unstructured data types as a way to demonstrate use of AWS Cloud infrastructure. However, the free license expires after a year or when credits end. An alternative database solution from reviewing [Vercel documentation](https://vercel.com/docs/storage#choosing-a-storage-product) was identified sufficient for data type, data size, latency, durability, and consistent performance in this proof of concept; designed for as "real-time" as possible, Edge Config.
 
 The selected database and it's respective [limits and pricing](https://vercel.com/docs/edge-config/edge-config-limits) has been conducted using [Edge Config API Endpoint](https://vercel.com/docs/edge-config/using-edge-config#querying-edge-config-endpoints) to ingest third party API data not otherwise manually scraped, transformed, and loaded into the github repository.
 
+---
+
 ### Algorithmic model:
 Refactoring previous proprietary financial technology, the minimum viable product for this deliverable will be to feed in financial API data using [Coincap OpenAPI](https://pro.coincap.io/api-docs) to our database and displayed onto the frontend. This will be the basis dataset for fresh data being accumulated overtime upto the storage limitations of the database where "expired" data will be removed.
 Depending on availabile captail, a comparison of [treasury data](https://fiscaldata.treasury.gov/api-documentation/) may also be done with respects to a mutual time freqeuency for analyzing trends and predicting the differences between the data sets in a real world fashion to understand the relationship of paper currency to crypto currency.
 
 note: Algorithmic models & methods are inherently static by design.
+
+---
 
 ### Agentic model:
 As of Dec 2025, Gemini was selected as the LLM due to better support for free features (i.e number of tokens) compared to other providers. Due to the free limitiations, an agentic news letter will be designed as one-way, ran daily; or weekly, depeneding on previous KPI metrics.
@@ -220,7 +198,7 @@ More robust agentic models and methods (e.g RAG) are out of scope at this time o
 
 *(This diagram is live-rendered by GitHub using Mermaid.js)*
 
-# 🔄 System Architecture: ETL & Data Flow
+## Summary of System Architecture: ETL & Data Flow
 
 This diagram illustrates the automated pipeline moving data from external sources into Vercel Edge Config for low-latency frontend access.
 
