@@ -15,6 +15,7 @@
   <a href="https://www.linkedin.com/in/thomas-to-ucdavis/">
     <img src="https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
+</div>
 
 ---
 
@@ -102,8 +103,6 @@ This document outlines the strategic design choices to minimize cost while maxim
 | **Precision** | Low (delay 5–30 mins) | Low (delay up to 1 hour) |
 | **Resource Access** | Full VM (Filesystem, CLI, Docker) | HTTP Endpoint only (Serverless) |
 | **Overages** | N/A (Always free for public) | **None** (Hard stop at limit) |
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### The "Vercel-Pinger" Solution (Technical Hack)
 To bypass the Vercel scheduling limit, we utilize the **GitHub Action -> Vercel Webhook** pattern:
