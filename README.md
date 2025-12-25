@@ -84,7 +84,7 @@ This portfolio is a live "Serverless & Agentic" proof-of-concept built using the
   </ol>
 </details>
 
-## 🏗️ Project Architecture: Zero-to-One ETL/ELT Pipeline
+## 🏗️ Project Architecture:
 To design this project for the foreseeable future, it's longevity and sustainability must remain free of charge. Therefore, the project design will be small-scale, proof of concept showcasing aptitude for designing, developing, and deploying software. 
 
 To demonstrate agentic fullstack software engineering, atleast one database, one algorithmic model, and one agentic model will be implemented using continious integration and continous deployment from GitHub acting as our data warehouse backend, to utilizing Vercel for it's intended purpose as a frontend as a service.
@@ -93,7 +93,7 @@ This document outlines the strategic design choices to minimize cost while maxim
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## System Design Key Performance Indicators (KPI):
+### System Design Key Performance Indicators (KPI):
 | Feature | **GitHub Public Repo (Free)** | **Vercel Hobby (Free)** |
 | :--- | :--- | :--- |
 | **Usage Limit** | **Unlimited Minutes** | **2 Cron Jobs Total** |
@@ -126,6 +126,31 @@ Where:
 * $L = 100$ (Daily Limit)
 * $B = 0.20$ (Safety Buffer)
 * Result: $80$ available automated slots per day.
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#0070f3', 'secondaryColor': '#ff0000', 'tertiaryColor': '#fff'}}}%%
+gantt
+    title Vercel Deployment Consumption (Daily Limit: 100)
+    dateFormat X
+    axisFormat %s
+    
+    section Safe Zone (0-80)
+    Daily (1)           : 0, 1
+    Hourly (24)         : 0, 24
+    Every 30m (48)      : 0, 48
+    
+    section Danger Zone (80-100)
+    Every 15m (96)      : crit, 0, 96
+    HARD LIMIT (100)    : milestone, 100, 100 
+```
+
+```mermaid
+xychart-beta
+    title "Daily Deployment Consumption vs Limits"
+    x-axis [Daily, 12h, 6h, 3h, Hourly, 30m, 15m]
+    y-axis "Deployments per Day" 0 --> 100
+    bar [1, 2, 4, 8, 24, 48, 96]
+    line [80, 80, 80, 80, 80, 80, 80]
+```
 
 ### Recommendation
 **Safe Maximum Frequency: Hourly (24 Deployments/Day)**
@@ -136,9 +161,23 @@ Where:
 
 **Warning:** Do **not** exceed a frequency of **Every 15 Minutes** (96 deploys/day). This creates a "Red Zone" risk where a single manual commit could lock your project for 24 hours.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Database:
+
 This project was initially scoped for the use of AWS database services; opting for dynamoDB, to support both structured and unstructured data types as a way to demonstrate use of AWS Cloud infrastructure. However, the free license expires after a year or when credits end. An alternative database solution from reviewing [Vercel documentation](https://vercel.com/docs/storage#choosing-a-storage-product) was identified sufficient for latency, durability, and consistent performance in this proof of concept; designed for as "real-time" as possible, Edge Config.
 
 The selected database and it's respective [limits and pricing](https://vercel.com/docs/edge-config/edge-config-limits) has been conducted using [Edge Config API Endpoint](https://vercel.com/docs/edge-config/using-edge-config#querying-edge-config-endpoints) to ingest third party API data not otherwise manually scraped, transformed, and loaded into the github repository.
+
+### Algorithmic model:
+Refactoring previous proprietary financial technology, the minimum viable product for this deliverable will be to feed in coinbase API REST API calls to our database and displayed onto the frontend. This will be the basis dataset for fresh data being accumulated overtime upto the storage limitations of the database where "expired" data will be removed.
+
+note: Algorithmic models & methods are inherently static by design.
+
+### Agentic model:
+As of Dec 2025, Gemini was selected as the LLM due to better support for free features (i.e number of tokens) compared to other providers. Due to the free limitiations, an agentic news letter will be designed as one-way, ran daily; or weekly, depeneding on previous KPI metrics.
+
+More robust agentic models and methods (e.g RAG) are out of scope at this time of a minimally viable product to showcase agentic compentecy and capabilities not in a professional setting.
 
 *(This diagram is live-rendered by GitHub using Mermaid.js)*
 
