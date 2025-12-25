@@ -50,20 +50,6 @@ Experienced with **Zero-to-One Architecture**: starting from the generation of e
 
 ---
 
-## 🛠 Project Tech Stack
-
-### 🏗️ Built Using
-This portfolio is a live "Serverless & Agentic" proof-of-concept built using the following stack:
-
-| **Core Infrastructure** | **Frontend Experience** | **Data & Backend** | **AI & Integrations** |
-| :--- | :--- | :--- | :--- |
-| **Git & GitHub** (Version Control + "Database") | **React** (UI Library) | **Vercel Blob** (Object Storage) | **Gemini API** (GenAI Logic) |
-| **Vercel** (Edge Hosting & Deployment) | **TypeScript** (Type Safety) | **AWS DynamoDB** (NoSQL / Roadmap) | **Hugging Face** (Model Inference) |
-| **GitHub Actions** (CI/CD & CRON Workers) | **Next.js** (Server Components) | **Node.js** (ETL Scripting) | **Coinbase API** (Fintech Data) |
-| **Markdown** (Documentation as Code) | **Tailwind CSS** (Styling) |  | **REST / GraphQL** (Cross-Platform API) |
-
----
-
 [🏠 Home](/README.md) | [🏗️ Architecture](#Project_Architecture) | [🚀 Deployment](deployment)
 
 ---
@@ -84,12 +70,25 @@ This portfolio is a live "Serverless & Agentic" proof-of-concept built using the
   </ol>
 </details>
 
+--- 
+
 ## 🏗️ Project Architecture:
 To design this project for the foreseeable future, it's longevity and sustainability must remain free of charge. Therefore, the project design will be small-scale, proof of concept showcasing aptitude for designing, developing, and deploying software. 
 
 To demonstrate agentic fullstack software engineering, atleast one database, one algorithmic model, and one agentic model will be implemented using continious integration and continous deployment from GitHub acting as our data warehouse backend, to utilizing Vercel for it's intended purpose as a frontend as a service.
 
 This document outlines the strategic design choices to minimize cost while maximizing the capabilities within this constraint. Additional information can be found in the [markdown](/markdown) folder.
+
+### 🏗️ Built Using
+
+| **Core Infrastructure** | **Frontend Experience** | **Data & Backend** | **AI & Integrations** |
+| :--- | :--- | :--- | :--- |
+| **Git & GitHub** (Version Control + "Database") | **React** (UI Library) | **Vercel Blob** (Object Storage) | **Gemini API** (GenAI Logic) |
+| **Vercel** (Edge Hosting & Deployment) | **TypeScript** (Type Safety) | **AWS DynamoDB** (NoSQL / Roadmap) | **Hugging Face** (Model Inference) |
+| **GitHub Actions** (CI/CD & CRON Workers) | **Next.js** (Server Components) | **Node.js** (ETL Scripting) | **Coinbase API** (Fintech Data) |
+| **Markdown** (Documentation as Code) | **Tailwind CSS** (Styling) | **OpenSSH** (Secure Auth) | **REST** (public-apis) |
+
+---
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -124,8 +123,6 @@ The following analyzes the operational risks and potential cost bottlenecks asso
 
 **The Financial Risk:** High-frequency deployment strategies (e.g., every 15 minutes) not only risk hitting the hard cap but also exponentially consume **Build Minutes**. While the primary constraint is the count limit, excessive build duration will trigger overage charges on Pro plans or suspension on Free tiers.
 
----
-
 ## Consumption vs. Limits
 
 The chart below visualizes the deployment consumption against the platform's hard limit. The "Danger Zone" begins where automated usage consumes the safety buffer required for manual intervention.
@@ -139,11 +136,9 @@ xychart-beta
     line [100, 100, 100, 100, 100, 100, 100]
 ```
 
-## Mathematical Risk Model
+## Risk Model
 
 To quantify operational stability, we define the **Risk Factor ($R$)** as the percentage of the daily limit consumed by automation.
-
-### The Formulas
 
 $$
 \text{Let } T = \text{Interval in Minutes}
@@ -158,18 +153,9 @@ $$
 $$
 
 ### Risk Condition Logic
-We define three operational states based on the Risk Factor ($R$). A system is considered "Unstable" if it consumes the 20% buffer reserved for manual hotfixes.
+A system is considered "Unstable" if it consumes the 20% buffer reserved for manual hotfixes.
 
-$$
-\text{Condition:} \quad
-\begin{cases} 
-   R \leq 80\% & \text{SAFE (Green)} \\
-   80\% < R < 100\% & \text{CRITICAL (Red)} \\
-   R \geq 100\% & \text{FAILURE (Black)} 
-\end{cases}
-$$
-
-### Example Calculation (15-Minute Interval)
+### Absolute Maximum Absolute Risk Frequency
 Running a deployment every 15 minutes utilizes **96%** of the daily capacity immediately:
 
 $$
@@ -180,7 +166,7 @@ $$
 
 ---
 
-## Optimization: The Maximum Allowable Frequency
+## Optimized to the Maximum Allowable Risk Frequency
 
 To determine the fastest possible safe interval ($T_{safe}$) that utilizes exactly 80% of the daily capacity (leaving exactly 20 slots for engineers):
 
@@ -198,7 +184,7 @@ $$
 
 **Result:** An interval of **18 minutes** is the mathematical hard limit for safety.
 
-### Comparison: Hourly vs. 30 Minutes
+### Comparison of Acceptable Realistic Frequencies: Hourly vs. 30 Minutes
 The following table compares the capacity impact of standard cron schedules against the platform hard limit ($L_{max}=100$).
 
 | Metric | Hourly (60 min) | 30 Minutes |
@@ -208,36 +194,22 @@ The following table compares the capacity impact of standard cron schedules agai
 | **Status** | ✅ **SAFE** | ⚠️ **CAUTION** |
 | **Buffer Remaining** | 76 slots | 52 slots |
 
-### Mathematical Proof
-
-**Case A: Hourly Schedule**
-$$
-T = 60 \text{min}
-$$
-
-$$
-R_{60} = \left( \frac{1440 / 60}{100} \right) \times 100\% = \mathbf{24\%}
-$$
-
-**Case B: 30-Minute Schedule**
-$$T = 30 \text{min}$$
-$$R_{30} = \left( \frac{1440 / 30}{100} \right) \times 100\% = \mathbf{48\%}$$
-
 ### Final Decision
-30 Minutes during active development and maintenace of tools while under continous deployment and allow for continual uptime for users to interact with the production server upto 20 minutes when the project life cycle has reached it's Stewardship phase and is no longer undergoing development of new features given the (financial) constraints previously mentioned.
+30 Minutes during active development and maintenace of tools while under continous deployment and allow for continual uptime for users to interact with the production server upto 20 minutes when the project life cycle has reached it's deployed monitoring phase and is no longer undergoing development of new features given the (financial) constraints previously mentioned.
 
-An additional layer of security for risk migitation can be to omit triggering changes to deploy and develop in an local enviornment when working in the backend.
+An additional layer of security for risk migitation can be used to omit deploying changes and develop in an local enviornment when working in the backend.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Database:
 
-This project was initially scoped for the use of AWS database services; opting for dynamoDB, to support both structured and unstructured data types as a way to demonstrate use of AWS Cloud infrastructure. However, the free license expires after a year or when credits end. An alternative database solution from reviewing [Vercel documentation](https://vercel.com/docs/storage#choosing-a-storage-product) was identified sufficient for latency, durability, and consistent performance in this proof of concept; designed for as "real-time" as possible, Edge Config.
+This project was initially scoped for the use of AWS database services; opting for dynamoDB, to support both structured and unstructured data types as a way to demonstrate use of AWS Cloud infrastructure. However, the free license expires after a year or when credits end. An alternative database solution from reviewing [Vercel documentation](https://vercel.com/docs/storage#choosing-a-storage-product) was identified sufficient for data type, data size, latency, durability, and consistent performance in this proof of concept; designed for as "real-time" as possible, Edge Config.
 
 The selected database and it's respective [limits and pricing](https://vercel.com/docs/edge-config/edge-config-limits) has been conducted using [Edge Config API Endpoint](https://vercel.com/docs/edge-config/using-edge-config#querying-edge-config-endpoints) to ingest third party API data not otherwise manually scraped, transformed, and loaded into the github repository.
 
 ### Algorithmic model:
-Refactoring previous proprietary financial technology, the minimum viable product for this deliverable will be to feed in coinbase API REST API calls to our database and displayed onto the frontend. This will be the basis dataset for fresh data being accumulated overtime upto the storage limitations of the database where "expired" data will be removed.
+Refactoring previous proprietary financial technology, the minimum viable product for this deliverable will be to feed in financial API data using [Coincap OpenAPI](https://pro.coincap.io/api-docs) to our database and displayed onto the frontend. This will be the basis dataset for fresh data being accumulated overtime upto the storage limitations of the database where "expired" data will be removed.
+Depending on availabile captail, a comparison of [treasury data](https://fiscaldata.treasury.gov/api-documentation/) may also be done with respects to a mutual time freqeuency for analyzing trends and predicting the differences between the data sets in a real world fashion to understand the relationship of paper currency to crypto currency.
 
 note: Algorithmic models & methods are inherently static by design.
 
