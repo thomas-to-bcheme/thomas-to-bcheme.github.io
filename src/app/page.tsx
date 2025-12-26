@@ -461,7 +461,21 @@ export default function Home() {
 				suffix=".2M" 
 				prefix="$" 
 				label="Revenue Protected" 
-				subtext="Optimized End-to-end Parameters."
+				subtext={
+			<div className="flex flex-col gap-1.5 w-full">
+				{/* Line 1: The mechanism */}
+				<div className="flex items-center justify-center md:justify-start gap-2">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>Optimized End-to-end Parameters</span>
+				</div>
+
+				{/* Line 2: The business result */}
+				<div className="flex items-center justify-center md:justify-start gap-2 text-zinc-400">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>ICH7 and GMP Compliant</span>
+				</div>
+			</div>
+		}
 			/>
 			<ImpactMetric 
 				value={50} 
@@ -489,14 +503,42 @@ export default function Home() {
 			prefix=">$"
 			suffix="k" 
 			label="Waste Eliminated" 
-			subtext="Inventory Modeling & Standard Operating Procedure."
+			subtext={
+			<div className="flex flex-col gap-1.5 w-full">
+				{/* Line 1: The mechanism */}
+				<div className="flex items-center justify-center md:justify-start gap-2">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>Material Management Model</span>
+				</div>
+
+				{/* Line 2: The business result */}
+				<div className="flex items-center justify-center md:justify-start gap-2 text-zinc-400">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>Standard Operating Procedures</span>
+				</div>
+			</div>
+		}
 		/>
 		<ImpactMetric 
 			value={10}
 			prefix=">"
 			suffix="+" 
-			label="Agentic Products" 
-			subtext="Deployed Proprietary & Open Source"
+			label="Custom Agentic Products Deployed" 
+			subtext={
+			<div className="flex flex-col gap-1.5 w-full">
+				{/* Line 1: The mechanism */}
+				<div className="flex items-center justify-center md:justify-start gap-2">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>Propietary</span>
+				</div>
+
+				{/* Line 2: The business result */}
+				<div className="flex items-center justify-center md:justify-start gap-2 text-zinc-400">
+					<span className="text-emerald-500 font-bold text-xs">✔</span>
+					<span>Open Source</span>
+				</div>
+			</div>
+		}
 		/>
 		</div>
 	</div>
@@ -614,7 +656,7 @@ export default function Home() {
 			 <Globe className="mb-3 text-blue-500" size={20} />
 			 <h5 className="font-bold text-zinc-900 dark:text-white mb-2">Philosophy</h5>
 			 <p className="text-xs text-zinc-500 leading-snug">
-				 Data and mathematics are a means to engineer 0-to-1 minimally viable initial solutions and optimize thereafter.
+				 Data and mathematics are a means to engineer 0-to-1 minimally viable initial solutions to optimize thereafter.
 			 </p>
 		</div>
 		<div className="bg-white dark:bg-black p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-pink-300 transition-colors">

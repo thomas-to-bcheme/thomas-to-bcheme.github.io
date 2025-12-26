@@ -23,7 +23,7 @@ export default function ArchitectureDiagram() {
             <div className="text-center sm:text-left">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">Empirical Data Acquisition</h3>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                <strong>Digitized Systems</strong> to capture raw data reflecting reality
+                <strong>Digitized Systems</strong> to capture raw data sources reflecting reality
               </p>
             </div>
           </div>
