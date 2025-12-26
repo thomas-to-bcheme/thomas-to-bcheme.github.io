@@ -528,7 +528,7 @@ export default function Home() {
 						{/* Hierarchical Badge Section */}
 						<div className="flex gap-2 flex-wrap content-start mb-8">
 							 <Badge color="blue" pulse icon={Code2}>Fullstack Agentic Software Engineer</Badge>
-							 <Badge color="blue" variant="transparent" pulse icon={Database}>Data Science (AI/ML)</Badge>
+							 <Badge color="blue" pulse icon={Database}>Data Science (AI/ML)</Badge>
 							 <Badge color="blue" variant="outline" icon={FlaskConical}>Biochemical Engineer</Badge>
 							 <Badge color="blue" variant="outline" icon={Dna}>Protein Design</Badge>
 						</div>
