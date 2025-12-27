@@ -167,26 +167,26 @@ export default function Home() {
         <BentoGrid className="pb-12">
           <BentoCard colSpan={2} noFade={true} id="proj-1">
              <ProjectDeepDive 
-               title="Self-Hosted Agentic RAG"
-               role="Lead Architect"
-               problem="Static portfolios fail to demonstrate 'live' engineering capability or handling of non-deterministic data."
-               solution="Built a self-correcting RAG agent that ingests my resume/codebase. It uses Vercel AI SDK to stream responses and 'hallucination checks' against a vector store."
-               architecture="Next.js 14, LangChain, Pinecone, Vercel Edge Functions"
-               tags={['Next.js', 'TypeScript', 'OpenAI', 'Vector DB']}
-               kpis={['< 200ms TTFB', '100% Automated Recruiter Q&A']}
-             />
-          </BentoCard>
+             	title="Agentic Revenue Optimization"
+             	role="AI/ML Engineer"
+             	problem="High biological variability in donor starting material (Leukopaks, Bone Marrow) led to unpredictable cell yields, causing inventory misalignment and lost revenue on rare cell types."
+             	solution="Architected a predictive model to classify donors by highest probable cell yield (optimizing for Rarity vs. Throughput). Deployed an Agentic Interface to bridge lab data with enterprise ERP systems, automating yield reporting for sales teams."
+             	parameters={['Weight', 'Height', 'Age', 'Sex', 'Ethnicity','Smoker','Blood Type', 'CMV Status', 'Cell Count (TNC)', 'Cell Count (MNC)', 'Cell Count (Isolate)']}
+             	tags={['CRM (CRIO)','ERP (SAP)','Snowflake', 'BI (Tableau)', 'SQL','Python']}
+              kpis={['Querying from hours to minutes','Ability to select donors for orders']}
+           	/>
+         	</BentoCard>
 
           <BentoCard colSpan={2} noFade={true} id="proj-2">
              <ProjectDeepDive 
-               title="Bio-Process ETL Pipeline"
-               role="Data Engineer"
-               problem="Critical manufacturing decisions relied on 'tribal knowledge' and manual spreadsheets, leading to 87% operational inefficiency."
-               solution="Engineered an automated ETL pipeline ingesting sensor data from bioreactors. Created a 'Digital Twin' model to predict yield outcomes."
-               architecture="Python (Pandas), Airflow, Snowflake, JMP"
-               tags={['Python', 'ETL', 'Snowflake', 'Statistics']}
-               kpis={['$63.2M Cost Avoidance', 'Real-time Yield Prediction']}
-             />
+             	title="Agentic Onboarding"
+             	role="AI/ML Engineer"
+             	problem="Fragmented documentation and reliance on tribal knowledge (i.e word of mouth) caused slow onboarding and information silos."
+             	solution="RAG Agents fine-tuned to department specific standard operating procedures (SOP) for niche context with atleast one (1) orchestrator agent with general context for cross-functional insight"
+             	parameters={['SOP','Work Instructions','Human Validated Training Text']}
+             	tags={['Google','ERP (SAP)','Snowflake', 'Atlassian (Confluence)', 'SQL','Python']}
+              kpis={['Context improving learning rate up to 80% (Wright’s Law: Stanford-B model)', 'Resource efficient contextual GenAI']}
+           	/>
           </BentoCard>
         </BentoGrid>
 

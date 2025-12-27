@@ -1,79 +1,103 @@
-"use client";
+import React from 'react';
+import { Layers, TrendingUp, CheckCircle2, Code2, Sliders } from 'lucide-react';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import CountUp from 'react-countup';
-import AiGenerator from "@/components/AiGenerator";
-import ArchitectureDiagram from "@/components/ArchitectureDiagram";
-import ROICalculation from "@/components/ROICalculation";
-import EfficiencyCalculator from '@/components/EfficiencyCalculator'; // Import it
-import { // --- SOCIAL & CONTACT ---
-  Users, HeartHandshake, TrendingUp, Github, Linkedin, Mail, FileText, MapPin, 
-  
-  // --- CORE TECH & AI ---
-  Cpu, Code2, Database, Server, Terminal,GitFork,Copyright,   // General Tech
-  Bot, BrainCircuit, Sparkles,PiggyBank,               // AI & Agents
-  CloudLightning, Layers, Network,          // Architecture/Cloud
-  Lock, ShieldCheck, ClipboardCheck, Scale,           // Security
-  GitBranch, Workflow,TrendingDown,Recycle,   // DevOps/Version Control
-  
-  // --- BIO-ENGINEERING & SCIENCE ---
-  Dna, FlaskConical, Microscope, BookOpenCheck,          // Wet Lab & Research
-  
-  // --- HOBBIES & PERSONAL ---
-  Dumbbell, Swords, Trophy, Medal,        // Sports (Lifting/Combat)
-  Music, Mic, Headphones,                 // Music
-  
-  // --- UI & UX UTILITIES ---
-  ArrowRight, ExternalLink, Download,     // Actions
-  CheckCircle2, AlertCircle, HelpCircle,  // Status Indicators
-  Zap, Activity, Signal, Globe, Package, Boxes,           // System Status
-  Layout, Menu, ChevronDown,               // Navigation
-} from 'lucide-react';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+interface ProjectDeepDiveProps {
+  title: string;
+  role: string;
+  problem: string;
+  solution: string;
+  parameters?: string[]; // Expecting an array of strings
+  tags: string[];
+  kpis: string[];
+  architecture?: string;
+}
 
-const ProjectDeepDive = ({ title, role, problem, solution, architecture, kpis, tags }: any) => (
-	<div className="flex flex-col h-full space-y-4">
-		<div className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
-			<h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-1">{title}</h4>
-			<p className="text-xs font-mono text-blue-600 dark:text-blue-400">{role}</p>
-		</div>
-		
-		<div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-			<div className="space-y-3">
-				<div>
-					<span className="text-[10px] uppercase font-bold text-zinc-400">The Problem</span>
-					<p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{problem}</p>
-				</div>
-				<div>
-					<span className="text-[10px] uppercase font-bold text-zinc-400">The Solution</span>
-					<p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{solution}</p>
-				</div>
-			</div>
-			
-			<div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-3 border border-zinc-100 dark:border-zinc-800 space-y-3">
-				<div>
-					 <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center gap-1"><Layers size={10}/> Architecture</span>
-					 <div className="flex flex-wrap gap-1.5 mt-1.5">
-						 {tags.map((t: string) => (
-							 <span key={t} className="px-2 py-0.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded text-[10px] text-zinc-600 dark:text-zinc-400">{t}</span>
-						 ))}
-					 </div>
-				</div>
-				<div>
-					 <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center gap-1"><TrendingUp size={10}/> Impact KPI</span>
-					 <ul className="mt-1.5 space-y-1">
-						 {kpis.map((k: string) => (
-							 <li key={k} className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-								 <CheckCircle2 size={10} /> {k}
-							 </li>
-						 ))}
-					 </ul>
-				</div>
-			</div>
-		</div>
-	</div>
+const ProjectDeepDive = ({ 
+  title, 
+  role, 
+  problem, 
+  solution, 
+  parameters, 
+  tags, 
+  kpis 
+}: ProjectDeepDiveProps) => (
+  <div className="flex flex-col h-full space-y-4">
+    {/* Header */}
+    <div className="border-b border-zinc-100 dark:border-zinc-800 pb-4">
+      <h4 className="text-xl font-bold text-zinc-900 dark:text-white mb-1">{title}</h4>
+      <p className="text-xs font-mono text-blue-600 dark:text-blue-400">{role}</p>
+    </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+      {/* Left Col: Narrative */}
+      <div className="space-y-4">
+        <div>
+          <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">The Problem</span>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{problem}</p>
+        </div>
+        <div>
+          <span className="text-[10px] uppercase font-bold text-zinc-400 block mb-1">The Solution</span>
+          <p className="text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">{solution}</p>
+        </div>
+      </div>
+      
+      {/* Right Col: Technical & Impact */}
+      <div className="bg-zinc-50 dark:bg-zinc-900/50 rounded-lg p-4 border border-zinc-100 dark:border-zinc-800 space-y-4 flex flex-col justify-between">
+        
+{/* --- FIXED SECTION START --- */}
+        {Array.isArray(parameters) && parameters.length > 0 && (
+          <div>
+            <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center gap-1.5 mb-2">
+              <Sliders size={12}/> Parameters
+            </span>
+            {/* CHANGED: Switched from 'grid grid-cols-2' to 'flex flex-wrap' to match Architecture */}
+            <div className="flex flex-wrap gap-1.5">
+              {parameters.map((param) => (
+                 <span 
+                    key={param} 
+                    className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded text-[10px] font-medium text-blue-700 dark:text-blue-300" 
+                    title={param}
+                 >
+                  {param}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* --- FIXED SECTION END --- */}
+
+        {/* Architecture Tags */}
+        <div>
+           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center gap-1.5 mb-2">
+             <Layers size={12}/> Architecture Stack
+           </span>
+           <div className="flex flex-wrap gap-1.5">
+             {tags.map((t) => (
+               <span key={t} className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 rounded text-[10px] font-medium text-blue-700 dark:text-blue-300">
+                 {t}
+               </span>
+             ))}
+           </div>
+        </div>
+
+        {/* Impact KPIs */}
+        <div className="pt-2 border-t border-zinc-200 dark:border-zinc-700">
+           <span className="text-[10px] uppercase font-bold text-zinc-400 flex items-center gap-1.5 mb-2">
+             <TrendingUp size={12}/> Impact Outcomes
+           </span>
+           <ul className="space-y-1.5">
+             {kpis.map((k) => (
+               <li key={k} className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-start gap-1.5">
+                 <CheckCircle2 size={14} className="shrink-0 mt-0.5" /> 
+                 <span>{k}</span>
+               </li>
+             ))}
+           </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
 );
 
 export default ProjectDeepDive;
