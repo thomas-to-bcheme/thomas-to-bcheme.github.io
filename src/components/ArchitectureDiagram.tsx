@@ -44,7 +44,9 @@ export default function ArchitectureDiagram() {
             <div className="text-center sm:text-left">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">Data Infrastructure</h3>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                <strong>Data Pipelines</strong> to digitutilize data for modeling, analysis, and/or automation.
+                <strong>Digitutilize</strong> digitized data for modeling, analysis, and/or automation
+                <br />
+                <strong>Includes:</strong> Storage, Network, Cloud, Security, Authorization, Governance, etc.
               </p>
             </div>
           </div>
@@ -63,9 +65,9 @@ export default function ArchitectureDiagram() {
               </svg>
             </div>
             <div className="text-center sm:text-left">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Fullstack Agentic Software Development</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Digital Transformation</h3>
               <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-                <strong>Digital Transformation</strong> by realizing asset potential through the modernization of legacy tech stacks.
+                <strong>Fullstack Agentic Software</strong> to realize revenue and/or innovate
               </p>
             </div>
           </div>
@@ -86,7 +88,7 @@ export default function ArchitectureDiagram() {
             <div className="text-center sm:text-left">
               <h3 className="text-lg font-bold text-green-900 dark:text-green-100">Tangible Value & Return on Investment (ROI)</h3>
               <p className="text-sm text-green-800 dark:text-green-300 mt-1">
-                <strong>Efficiency, Revenue, Optimization.</strong> <br/>
+                <strong>Efficiency, Revenue, Optimization</strong> <br/>
                 Net gains as the measurable delta between manual process costs and optimized agentic output, directly converting engineering efficiency into recognized revenue.
               </p>
             </div>
