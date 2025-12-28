@@ -118,7 +118,6 @@ const ROICalculation = () => {
                 
                 {/* 1. NET SAVINGS */}
                 <KPICard 
-                    icon={<TrendingUp size={20} className="text-emerald-600" />}
                     title="Net Savings (3Yr)"
                     value={netSavings}
                     prefix="$"
@@ -133,7 +132,6 @@ const ROICalculation = () => {
 
                 {/* 2. BREAK-EVEN */}
                 <KPICard 
-                    icon={<CheckCircle2 size={20} className="text-zinc-600 dark:text-zinc-400" />}
                     title="Time to Profit"
                     value={breakEvenWeeks === Infinity ? 0 : breakEvenWeeks}
                     suffix="wks"
@@ -142,13 +140,12 @@ const ROICalculation = () => {
                     bottomLabel={
                          breakEvenWeeks === Infinity 
                          ? "Costs exceed savings." 
-                         : <span>Investment paid off in <span className="font-bold text-zinc-800 dark:text-white">{(breakEvenWeeks/4.3).toFixed(1)} months</span>.</span>
+                         : <span>Investment paid off in <span className="font-bold text-zinc-800 dark:text-white">{(breakEvenWeeks/4).toFixed(1)} months</span>.</span>
                     }
                 />
 
                  {/* 3. CAPACITY */}
                  <KPICard 
-                    icon={<Clock size={20} className="text-blue-600" />}
                     title="Capacity Unlocked"
                     value={annualHoursSaved}
                     suffix="hrs/yr"
@@ -161,7 +158,6 @@ const ROICalculation = () => {
 
                 {/* 4. TOTAL INVESTMENT */}
                 <KPICard 
-                    icon={<DollarSign size={20} className="text-zinc-600 dark:text-zinc-400" />}
                     title="Total CapEx"
                     value={totalBuildCost}
                     prefix="$"
@@ -179,7 +175,7 @@ const ROICalculation = () => {
           
           {/* LEFT: STEP-BY-STEP DERIVATION */}
           <div className="lg:col-span-2 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-xl p-8 shadow-sm">
-             <div className="flex items-center gap-3 mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+             <div className="flex items-center gap-3 mb-2 pb-2 border-b border-zinc-100 dark:border-zinc-800">
                 <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400"><Calculator size={24} /></div>
                 <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Engineering Derivation</h3>
              </div>
@@ -192,18 +188,21 @@ const ROICalculation = () => {
                     <h4 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-2">
   Manual Cost (<InlineMath math="C_{manual}" />)
 </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
-                        We calculate the collective cost of the task by multiplying the headcount involved, the time they dedicate to the task, and their hourly cost to the company.
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 leading-relaxed max-w-2xl">
+                        We calculate the collective cost of the task by multiplying the headcount involved <b>(<InlineMath math="N" />) </b>, 
+                        the time they dedicate to the task <b>(<InlineMath math="H" />) </b>
+                        and their hourly cost to the company <b>(<InlineMath math="\frac{S_{annual}}{2080}" />) </b>
+                        by the number of times this calculation is repeated <b>(<InlineMath math="t" />)</b>
                     </p>
                     <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
-                         <div className="mb-4">
+                         <div className="mb-2">
                             <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-2">Formula</div>
                             <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                                <InlineMath math="C_{manual} = N \times H \times \left( \frac{S_{annual}}{2080} \right)" />
+                                <InlineMath math="C_{manual}(t) = N \times \sum_{n=1}^{N} \frac{H_{n}}{n} \times \sum_{n=1}^{N} \frac{S_{annual,n}}{n \times 2080} \times t" />
                             </div>
                          </div>
                          <p className="text-xs text-zinc-500 italic">
-                             *Where 2080 represents the standard work hours in a year (40hrs x 52wks).
+                             Where 2080 represents the standard work hours in a year (40hrs x 52wks).
                          </p>
                     </div>
                  </div>
@@ -214,8 +213,8 @@ const ROICalculation = () => {
                     <h4 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-2">
   Automated Cost (<InlineMath math="C_{auto}" />)
 </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
-                        The cost of the automated solution is the sum of the initial engineering investment (Salary during build time) plus the ongoing infrastructure run cost (<InlineMath math="C_{cloud}" />).
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 leading-relaxed max-w-2xl">
+                        The cost of the automated solution is the sum of the initial engineering investment (Salary during build time) plus the ongoing infrastructure run cost (<InlineMath math="C_{auto}(t)=C_{build}+C_{cloud}" />).
                     </p>
                     <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -224,16 +223,20 @@ const ROICalculation = () => {
                                 <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
                                     <InlineMath math="C_{build} = \left( \frac{S_{dev}}{52} \right) \times W_{weeks}" />
                                 </div>
-                                <p className="text-[10px] text-zinc-400 italic mt-2 leading-tight">
-                                    *Where 52 is the number of weeks in one year to normalize annual Salary to weekly.
+                                <p className="text-xs text-zinc-500 italic">
+                                    Where 52 is the number of weeks in one year to normalize annual Salary to weekly.
                                 </p>
                              </div>
                              <div>
                                 <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-2">Ongoing Run Cost</div>
                                 <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
-                                    <InlineMath math="C_{run} = C_{cloud} \times t" />
+                                    <InlineMath math="C_{run}(t) = C_{cloud} \times t" />
                                 </div>
+                              <p className="text-xs text-zinc-500 italic">
+                             Where the variable cloud costs are estimated at a weekly average.
+                            </p>
                              </div>
+
                         </div>
                     </div>
                  </div>
@@ -244,7 +247,7 @@ const ROICalculation = () => {
                     <h4 className="text-lg font-bold text-blue-700 dark:text-blue-400 mb-2">
                         Solve for Break-Even (<InlineMath math="t_{break}" />)
                     </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 leading-relaxed max-w-2xl">
                         We equate <InlineMath math="C_{manual}" /> to <InlineMath math="C_{auto}" /> to find <strong><InlineMath math="t" /></strong>, which represents the number of times the calculation or task is repeated until the engineering investment is fully repaid.
                     </p>
                     <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-xl p-6">
@@ -253,7 +256,7 @@ const ROICalculation = () => {
                             {/* Line 0: Initiate Model */}
                              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-blue-100 dark:border-blue-800 pb-3">
                                 <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">0. Initiate Break-Even Model</span>
-                                <div className="font-mono font-bold text-lg text-blue-800 dark:text-blue-100">
+                                <div className="font-mono font-bold text-xl text-blue-800 dark:text-blue-100">
                                     <InlineMath math="C_{manual}(t) = C_{auto}(t)" />
                                 </div>
                             </div>
@@ -261,7 +264,7 @@ const ROICalculation = () => {
                             {/* Line 1: Equate / Expand */}
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-blue-100 dark:border-blue-800 pb-3">
                                 <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">1. Expand Cumulative Terms</span>
-                                <div className="font-mono font-bold text-lg text-blue-800 dark:text-blue-100">
+                                <div className="font-mono font-bold text-xl text-blue-800 dark:text-blue-100">
                                     <InlineMath math="C_{manual} \cdot t = C_{build} + C_{cloud} \cdot t" />
                                 </div>
                             </div>
@@ -277,7 +280,7 @@ const ROICalculation = () => {
                             {/* Line 3: Final Solution */}
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                                 <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">3. Final Solution</span>
-                                <div className="font-mono font-bold text-2xl text-blue-600 dark:text-blue-400">
+                                <div className="font-mono font-bold text-xl text-blue-800 dark:text-blue-100">
                                     <InlineMath math="t_{break} = \frac{C_{build}}{C_{manual} - C_{cloud}}" />
                                 </div>
                             </div>
@@ -292,7 +295,7 @@ const ROICalculation = () => {
                     <h4 className="text-lg font-bold text-emerald-700 dark:text-emerald-400 mb-2">
                         Case A: Profitable (<InlineMath math="C_{manual} > C_{cloud}" />)
                     </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 leading-relaxed max-w-2xl">
                         We compare the <strong>weekly</strong> cost of manual labor against the <strong>weekly</strong> cloud infrastructure cost. This assumes no further engineering maintenance is required beyond keeping the infrastructure running for each repeated calculation.
                     </p>
                     <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-xl p-6">
@@ -304,7 +307,7 @@ const ROICalculation = () => {
                                 </div>
                             </div>
                             <div className="text-sm text-zinc-600 dark:text-zinc-300 italic border-l-2 border-emerald-200 dark:border-emerald-800 pl-4">
-                                Result: <InlineMath math="t_{break}" /> is a positive finite number. The graph lines intersect, creating a <span className="text-emerald-600 font-bold">Green</span> profit zone.
+                            Conclusion: It is <span className="text-green-600 font-bold"> worth</span> the initial investment to build. The graph lines intersect, creating a <span className="text-emerald-600 font-bold">profit zone</span>.
                             </div>
                         </div>
                     </div>
@@ -316,7 +319,7 @@ const ROICalculation = () => {
                     <h4 className="text-lg font-bold text-rose-700 dark:text-rose-400 mb-2">
                         Case B: Unprofitable (<InlineMath math="C_{manual} < C_{cloud}" />)
                     </h4>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-2 leading-relaxed max-w-2xl">
                         If the Cloud Run Cost exceeds the Manual Cost, the denominator becomes negative. While mathematically this yields a negative time, in reality, it indicates that the automation is simply more expensive to operate than the manual process.
                     </p>
                     <div className="bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800 rounded-xl p-6">
@@ -342,7 +345,7 @@ const ROICalculation = () => {
              
              {/* Definitions */}
              <div>
-                 <div className="flex items-center gap-3 mb-6">
+                 <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><FileText size={20} /></div>
                     <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Variable Legend</h3>
                  </div>
@@ -362,7 +365,7 @@ const ROICalculation = () => {
 
              {/* Assumptions */}
              <div>
-                 <div className="flex items-center gap-3 mb-6">
+                 <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><Info size={20} /></div>
                     <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Modeling Assumptions</h3>
                  </div>
@@ -376,12 +379,12 @@ const ROICalculation = () => {
 
              {/* Rationale for Initial Conditions */}
              <div>
-                 <div className="flex items-center gap-3 mb-6">
+                 <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><Lightbulb size={20} /></div>
                     <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Rationale for Conditions</h3>
                  </div>
                  <ul className="space-y-4">
-                 <AssumptionItem text="Dev Salary represents Thomas hired at a $150,000 annual salary to build and maintain these systems." />
+                 <AssumptionItem text="Dev Salary represents you hired me at a $150,000 annual salary to build and maintain these systems." />
                     <AssumptionItem text="Headcount & Hours: Representative of professional experience in small companies (<50 people) where roles are often hybrid." />
                     <AssumptionItem text="Build Time (4 Weeks): Includes full cycle abstraction, architecture, development, and deployment. Realistically often takes ~1 week, but 4 weeks provides a conservative buffer." />
                     <AssumptionItem text="Run Cost: Based on variable Snowflake compute credits + storage. A medium workload typically incurs $1k-$5k weekly." />
@@ -399,7 +402,7 @@ const ROICalculation = () => {
 
 const CleanInput = ({ label, val, set, min, max, step, unit }: any) => (
     <div className="group">
-        <div className="flex justify-between items-end mb-1.5">
+        <div className="flex justify-between items-end mb-2">
             <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</span>
             <span className="font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 border-b border-zinc-200 dark:border-zinc-800 pb-0.5">
                 {val.toLocaleString()}{unit}
@@ -456,11 +459,14 @@ const AssumptionItem = ({ text }: { text: string }) => (
 const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: any) => {
     const width = 1000; 
     const height = 300; 
-    const paddingRight = 60; // CHANGED: Padding now on the right
+    const paddingRight = 60; 
     const paddingBottom = 20; 
     const graphHeight = height - paddingBottom;
-    const graphWidth = width - paddingRight; // CHANGED: Graph fills left side
+    const graphWidth = width - paddingRight; 
     
+    // 1. HOVER STATE
+    const [hoverWeek, setHoverWeek] = useState<number | null>(null);
+
     // Scaling
     const maxManual = manualBurn * weeks;
     const maxAuto = buildCost + (autoBurn * weeks);
@@ -468,14 +474,14 @@ const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: 
 
     // Coord Helpers
     const getY = (val: number) => graphHeight - ((val / maxY) * graphHeight);
-    const getX = (w: number) => (w / weeks) * graphWidth; // CHANGED: Starts at 0
+    const getX = (w: number) => (w / weeks) * graphWidth; 
 
     // Line Coords
     const startY = graphHeight;
     const manualEndY = getY(maxManual);
     const autoStartY = getY(buildCost);
     const autoEndY = getY(maxAuto);
-    const endX = graphWidth; // CHANGED: End of graph is width - padding
+    const endX = graphWidth; 
 
     // Intersection
     let crossX = 0;
@@ -498,22 +504,65 @@ const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: 
     }
 
     // Y-Axis Ticks (Dollar Amounts)
-    const yTicks = [0, maxY * 0.33, maxY * 0.66, maxY];
+    const yTicks = [0, maxManual, maxAuto];
+
+    // 2. MOUSE HANDLERS
+    const handleMouseMove = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        // Calculate X relative to the SVG, accounting for scaling/responsiveness if necessary
+        // A robust way for fixed viewBox is mapping the ratio:
+        const xRatio = (e.clientX - rect.left) / rect.width;
+        const svgX = xRatio * width;
+
+        if (svgX < 0 || svgX > graphWidth) {
+            setHoverWeek(null);
+            return;
+        }
+
+        // Convert svgX to weeks
+        // svgX = (w / weeks) * graphWidth
+        const w = (svgX / graphWidth) * weeks;
+        setHoverWeek(Math.max(0, w));
+    };
+
+    const handleMouseLeave = () => setHoverWeek(null);
+
+    // 3. HOVER DATA CALCULATION
+    let hoverData = null;
+    if (hoverWeek !== null) {
+        const currentManual = manualBurn * hoverWeek;
+        const currentAuto = buildCost + (autoBurn * hoverWeek);
+        const diff = currentManual - currentAuto;
+        
+        hoverData = {
+            x: getX(hoverWeek),
+            manualY: getY(currentManual),
+            autoY: getY(currentAuto),
+            manualVal: currentManual,
+            autoVal: currentAuto,
+            net: diff
+        };
+    }
 
     return (
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible font-sans" preserveAspectRatio="none">
+        <svg 
+            viewBox={`0 0 ${width} ${height}`} 
+            className="w-full h-full overflow-visible font-sans cursor-crosshair touch-none" 
+            preserveAspectRatio="none"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+        >
              
              {/* Base Grid */}
              <line x1="0" y1={graphHeight} x2={graphWidth} y2={graphHeight} stroke="currentColor" strokeOpacity="0.1" strokeWidth="2" className="text-zinc-400" />
              
-             {/* Y-AXIS GRID & LABELS (MOVED TO RIGHT) */}
+             {/* Y-AXIS GRID & LABELS */}
              {yTicks.map((val, i) => {
                  const y = getY(val);
-                 if (i === 0) return null; // Skip 0 baseline
+                 if (i === 0) return null; 
                  return (
                     <g key={i}>
                         <line x1="0" y1={y} x2={graphWidth} y2={y} stroke="currentColor" strokeOpacity="0.05" strokeWidth="1" className="text-zinc-400" />
-                        {/* CHANGED: Text anchor 'start' and x position */}
                         <text x={graphWidth + 10} y={y + 3} textAnchor="start" className="text-[10px] font-bold fill-zinc-400">
                             ${(val / 1000).toFixed(0)}k
                         </text>
@@ -521,27 +570,22 @@ const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: 
                  )
              })}
              
-             {/* $0 Label at bottom right */}
              <text x={graphWidth + 10} y={graphHeight + 3} textAnchor="start" className="text-[10px] font-bold fill-zinc-400">$0</text>
-             
-             {/* Right Vertical Axis Line */}
              <line x1={graphWidth} y1={0} x2={graphWidth} y2={graphHeight} stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" className="text-zinc-400" />
 
-             {/* Minor Tickers (Quarterly) */}
+             {/* Minor Tickers */}
              {minorTicks.map((x, i) => (
                  <line key={i} x1={x} y1={graphHeight} x2={x} y2={graphHeight - 5} stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" className="text-zinc-300 dark:text-zinc-700" />
              ))}
 
-             {/* Major Ticks (Years) */}
+             {/* Major Ticks */}
              <line x1={yearWidth} y1={graphHeight} x2={yearWidth} y2={graphHeight + 5} stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" className="text-zinc-400" />
              <line x1={yearWidth * 2} y1={graphHeight} x2={yearWidth * 2} y2={graphHeight + 5} stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" className="text-zinc-400" />
 
              {/* --- AREAS --- */}
              {hasIntersection ? (
                  <>
-                    {/* RED (Investment Phase) */}
                     <path d={`M 0,${startY} L ${crossX},${crossY} L ${crossX},${getY(buildCost + autoBurn * breakEven)} L 0,${autoStartY} Z`} className="fill-rose-50 dark:fill-rose-900/20" />
-                    {/* GREEN (Profit Phase) */}
                     <path d={`M ${crossX},${crossY} L ${endX},${manualEndY} L ${endX},${autoEndY} L ${crossX},${crossY} Z`} className="fill-emerald-50 dark:fill-emerald-900/20" />
                  </>
              ) : (
@@ -553,13 +597,65 @@ const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: 
              )}
 
             {/* --- LINES --- */}
-            {/* Manual (Red/Grey) */}
-            <path d={`M 0,${startY} L ${endX},${manualEndY}`} fill="none" stroke="#e11d48" strokeWidth="2" strokeDasharray="4,4" />
+            {/* Manual */}
+            <path d={`M 0,${startY} L ${endX},${manualEndY}`} fill="none" stroke="#e11d48" strokeWidth="2" strokeDasharray="4,4" className="opacity-50" />
             <text x={endX - 10} y={manualEndY - 10} textAnchor="end" className="text-[10px] font-bold fill-rose-600 uppercase tracking-wider">Manual</text>
 
-            {/* Agentic (Blue) */}
+            {/* Agentic */}
             <path d={`M 0,${autoStartY} L ${endX},${autoEndY}`} fill="none" stroke="#2563eb" strokeWidth="3" />
             <text x={endX - 10} y={autoEndY - 10} textAnchor="end" className="text-[10px] font-bold fill-blue-600 uppercase tracking-wider">Agentic</text>
+
+            {/* --- HOVER INTERACTION OVERLAY --- */}
+            {/* Transparent rect to catch events everywhere in the grid */}
+            <rect x={0} y={0} width={graphWidth} height={graphHeight} fill="transparent" />
+
+            {/* --- HOVER TOOLTIP & MARKERS --- */}
+            {hoverData && (
+                <g>
+                    {/* Vertical Indicator Line */}
+                    <line 
+                        x1={hoverData.x} y1={0} 
+                        x2={hoverData.x} y2={graphHeight} 
+                        stroke="#71717a" strokeWidth="1" strokeDasharray="3,3" 
+                    />
+
+                    {/* Intersection Points */}
+                    <circle cx={hoverData.x} cy={hoverData.manualY} r="4" className="fill-rose-500" stroke="white" strokeWidth="2" />
+                    <circle cx={hoverData.x} cy={hoverData.autoY} r="4" className="fill-blue-600" stroke="white" strokeWidth="2" />
+
+                    {/* Tooltip Box */}
+                    {/* Shift tooltip left if near the right edge */}
+                    <g transform={`translate(${hoverData.x > graphWidth * 0.7 ? hoverData.x - 170 : hoverData.x + 15}, ${Math.min(hoverData.manualY, hoverData.autoY)})`}>
+                        <rect x="0" y="-10" width="160" height="90" rx="6" className="fill-white dark:fill-zinc-900 stroke-zinc-200 dark:stroke-zinc-700 shadow-xl" strokeWidth="1" />
+                        
+                        <g transform="translate(12, 12)">
+                            {/* Header: Week Number */}
+                            <text y="6" className="text-[10px] font-black uppercase tracking-wider fill-zinc-400">
+                                Week {hoverWeek?.toFixed(0)}
+                            </text>
+
+                            {/* Manual Row */}
+                            <circle cx="4" cy="24" r="3" className="fill-rose-500" />
+                            <text x="12" y="27" className="text-xs font-bold fill-zinc-700 dark:fill-zinc-200">
+                                Manual: ${(hoverData.manualVal).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </text>
+
+                            {/* Auto Row */}
+                            <circle cx="4" cy="44" r="3" className="fill-blue-600" />
+                            <text x="12" y="47" className="text-xs font-bold fill-zinc-700 dark:fill-zinc-200">
+                                Agentic: ${(hoverData.autoVal).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </text>
+
+                            {/* Net Difference */}
+                            <line x1="0" y1="58" x2="136" y2="58" stroke="currentColor" strokeOpacity="0.1" className="text-zinc-500" />
+                            <text x="0" y="74" className={`text-xs font-black ${hoverData.net > 0 ? 'fill-emerald-600' : 'fill-rose-500'}`}>
+                                {hoverData.net > 0 ? 'Savings: ' : 'Loss: '} 
+                                ${(Math.abs(hoverData.net)).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                            </text>
+                        </g>
+                    </g>
+                </g>
+            )}
 
             {/* --- X AXIS LABELS (Time) --- */}
             <text x={0} y={height} className="text-[10px] font-bold fill-zinc-400 uppercase">Start</text>
@@ -567,8 +663,8 @@ const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: 
             <text x={yearWidth * 2} y={height} textAnchor="middle" className="text-[10px] font-bold fill-zinc-400 uppercase">Year 2</text>
             <text x={graphWidth} y={height} textAnchor="end" className="text-[10px] font-bold fill-zinc-400 uppercase">Year 3</text>
 
-            {/* --- BREAK EVEN MARKER --- */}
-            {hasIntersection && (
+            {/* --- BREAK EVEN MARKER (Only show if not hovering to reduce clutter) --- */}
+            {hasIntersection && !hoverData && (
                 <g>
                     <circle cx={crossX} cy={crossY} r="4" fill="#10b981" stroke="white" strokeWidth="2" />
                     <line x1={crossX} y1={crossY} x2={crossX} y2={graphHeight} stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />

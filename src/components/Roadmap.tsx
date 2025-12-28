@@ -246,7 +246,7 @@ const Roadmap = () => {
             In an AI-saturated labor market where the barrier to entry has lowered, this portfolio serves as a <strong className="text-zinc-900 dark:text-white font-semibold">verification mechanism for engineering aptitude</strong>.
           </p>
           <p>
-            It provides a transparent, end-to-end view of the "0-to-1" engineering lifecycle—demonstrating the evolution from a minimal viable product to a robust, autonomous ecosystem. The objective is to move beyond static qualifications by offering a <span className="text-blue-600 dark:text-blue-400 font-medium">live, interactive demonstration</span> of full-stack competency distinguishing qualified engineering architecture from less qualified so-called engineers.
+            This provides a transparent, end-to-end view of the "0-to-1" engineering lifecycle—demonstrating the evolution from a minimal viable product to a robust, autonomous ecosystem. The objective is to contextualize a resume's content to showcase a engineer's qualifications by offering a <span className="text-blue-600 dark:text-blue-400 font-medium">live, interactive demonstration</span> of full-stack competency to distinguish qualified engineers.
           </p>
         </div>
 
