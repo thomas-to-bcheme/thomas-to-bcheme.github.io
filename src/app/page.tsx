@@ -107,7 +107,7 @@ export default function Home() {
               />
 
               <ImpactMetric 
-                value={50} prefix=">$" suffix="k/yr" label="OpEx Reduction" 
+                value={100} prefix=">$" suffix="k/yr" label="OpEx Reduction" 
                 subtext={
                   <div className="flex flex-col gap-1.5 w-full mt-2">
                     <div className="flex items-center justify-center md:justify-start gap-2">
@@ -161,7 +161,7 @@ export default function Home() {
         <div id="projects" className="mt-0 scroll-mt-24">
            <ArchitectureDiagram />
            <ROICalculation />
-           <EfficiencyCalculator />
+           
         </div>
 
         <BentoGrid className="pb-12">

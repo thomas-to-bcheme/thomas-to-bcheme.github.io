@@ -1,59 +1,558 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
+import { 
+  Users, Hammer, Activity,
+  Calculator, Info, FileText,
+  TrendingUp, Clock, CheckCircle2, DollarSign,
+  Lightbulb
+} from 'lucide-react';
+import CountUp from 'react-countup';
 import 'katex/dist/katex.min.css';
-import { BlockMath, InlineMath } from 'react-katex';
-import { TrendingUp, Activity, Zap } from 'lucide-react';
+import { InlineMath } from 'react-katex';
 
-const ImpactEquation = () => {
+const ROICalculation = () => {
+  // --- 1. STATE ---
+  // Updated defaults: Headcount 10, Build 4wks, Run $2500/WEEKLY
+  const [userCount, setUserCount] = useState(10);
+  const [userSalary, setUserSalary] = useState(70000); 
+  const [userHours, setUserHours] = useState(10); 
+
+  const [devSalary, setDevSalary] = useState(150000); 
+  const [buildWeeks, setBuildWeeks] = useState(4); 
+  // Refactored to Weekly input to match engineering model directly
+  const [runCostWeekly, setRunCostWeekly] = useState(2500); 
+
+  // --- 2. CALCULATIONS ---
+  const PROJECTION_WEEKS = 156; // 3 Year Horizon
+  const WORK_HOURS_YR = 2080;
+  
+  // Rates
+  const userHourlyRate = userSalary / WORK_HOURS_YR;
+  const manualWeeklyBurn = (userCount * userHours) * userHourlyRate;
+  
+  const devWeeklyRate = devSalary / 52;
+  const totalBuildCost = devWeeklyRate * buildWeeks; 
+  
+  // Direct assignment (No monthly conversion needed)
+  const autoWeeklyRunCost = runCostWeekly;
+
+  // Break Even
+  const weeklyNetSavings = manualWeeklyBurn - autoWeeklyRunCost;
+  const breakEvenWeeks = weeklyNetSavings > 0 
+    ? totalBuildCost / weeklyNetSavings 
+    : Infinity; 
+
+  // Totals at 3 Years
+  const totalManualCost = manualWeeklyBurn * PROJECTION_WEEKS;
+  const totalAutoCost = totalBuildCost + (autoWeeklyRunCost * PROJECTION_WEEKS);
+  const netSavings = totalManualCost - totalAutoCost;
+  const efficiencyMultiplier = totalBuildCost > 0 ? (netSavings / totalBuildCost) : 0;
+  const annualHoursSaved = (userCount * userHours) * 52;
+
   return (
-    <div className="w-full max-w-4xl mx-auto my-12 bg-white dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden">
+    <div className="w-full max-w-5xl mx-auto my-8 font-sans text-zinc-800 dark:text-zinc-200">
       
-      {/* 1. THE HEADER: Contextual Tags */}
-      <div className="bg-zinc-50 dark:bg-zinc-950 px-6 py-3 border-b border-zinc-200 dark:border-zinc-800 flex flex-wrap gap-4 justify-center md:justify-between items-center">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-            The Transformation Theorem
-        </span>
-        <div className="flex gap-4">
-            <div className="flex items-center gap-1.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400">
-                <Zap size={12} /> Efficiency
+      {/* --- MAIN CONTAINER (Graph + Dashboard) --- */}
+      <div className="bg-zinc-50 dark:bg-zinc-900/30 border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm mb-8">
+          
+          {/* 1. HERO GRAPH */}
+          <div className="relative w-full h-[320px] bg-white dark:bg-black/50 border-b border-zinc-200 dark:border-zinc-800 flex flex-col">
+              <div className="absolute top-4 left-6 z-10 pointer-events-none">
+                  <h2 className="text-xs font-black uppercase tracking-widest text-zinc-800 dark:text-white flex items-center gap-2">
+                      <Activity className="text-blue-600" size={16} /> 
+                      ROI Trajectory
+                  </h2>
+                  <p className="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium mt-1">
+                      Fixed Investment vs. Linear Scaling (3-Year Horizon)
+                  </p>
+              </div>
+              <div className="absolute inset-0 pt-16 pb-2 px-0">
+                   <ProfitLossGraph 
+                        weeks={PROJECTION_WEEKS}
+                        manualBurn={manualWeeklyBurn}
+                        autoBurn={autoWeeklyRunCost}
+                        buildCost={totalBuildCost}
+                        breakEven={breakEvenWeeks}
+                   />
+              </div>
+          </div>
+
+          {/* 2. DASHBOARD GRID (Drivers + KPIs) */}
+          <div className="p-4 grid lg:grid-cols-12 gap-4">
+            
+            {/* LEFT: MODEL DRIVERS */}
+            <div className="lg:col-span-4 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 p-5 rounded-xl shadow-sm flex flex-col gap-6">
+                <div className="pb-2 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
+                    <h3 className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Model Drivers</h3>
+                    <div className="p-1 bg-zinc-100 dark:bg-zinc-800 rounded">
+                        <Calculator size={12} className="text-zinc-500" />
+                    </div>
+                </div>
+
+                <div className="space-y-6">
+                    {/* Manual Group */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Users size={14} className="text-rose-500"/>
+                            <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Manual Problem</span>
+                        </div>
+                        <CleanInput label="Headcount" val={userCount} set={setUserCount} min={1} max={50} step={1} unit="FTE" />
+                        <CleanInput label="Avg Salary" val={userSalary} set={setUserSalary} min={40000} max={200000} step={5000} unit="$" />
+                        <CleanInput label="Hrs/Wk" val={userHours} set={setUserHours} min={1} max={40} step={1} unit="h" />
+                    </div>
+
+                    {/* Engineering Group */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 mb-1">
+                             <Hammer size={14} className="text-blue-600"/>
+                            <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Agentic Solution</span>
+                        </div>
+                        <CleanInput label="Dev Salary" val={devSalary} set={setDevSalary} min={80000} max={300000} step={5000} unit="$" />
+                        <CleanInput label="Build Time" val={buildWeeks} set={setBuildWeeks} min={1} max={24} step={1} unit="wks" />
+                        {/* Updated to Weekly Input */}
+                        <CleanInput label="Run Cost" val={runCostWeekly} set={setRunCostWeekly} min={0} max={10000} step={100} unit="$/wk" />
+                    </div>
+                </div>
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] font-medium text-blue-600 dark:text-blue-400">
-                <TrendingUp size={12} /> Revenue
+
+            {/* RIGHT: COMPACT KPI GRID */}
+            <div className="lg:col-span-8 grid grid-cols-2 gap-3 h-full">
+                
+                {/* 1. NET SAVINGS */}
+                <KPICard 
+                    icon={<TrendingUp size={20} className="text-emerald-600" />}
+                    title="Net Savings (3Yr)"
+                    value={netSavings}
+                    prefix="$"
+                    isCurrency={true}
+                    color={netSavings >= 0 ? 'text-emerald-600' : 'text-rose-500'}
+                    bottomLabel={
+                        <span>
+                            Returns <span className="font-bold text-zinc-800 dark:text-white">${efficiencyMultiplier.toFixed(2)}</span> for every <span className="font-bold text-zinc-800 dark:text-white">$1</span> in engineering.
+                        </span>
+                    }
+                />
+
+                {/* 2. BREAK-EVEN */}
+                <KPICard 
+                    icon={<CheckCircle2 size={20} className="text-zinc-600 dark:text-zinc-400" />}
+                    title="Time to Profit"
+                    value={breakEvenWeeks === Infinity ? 0 : breakEvenWeeks}
+                    suffix="wks"
+                    isCurrency={false}
+                    color="text-zinc-800 dark:text-white"
+                    bottomLabel={
+                         breakEvenWeeks === Infinity 
+                         ? "Costs exceed savings." 
+                         : <span>Investment paid off in <span className="font-bold text-zinc-800 dark:text-white">{(breakEvenWeeks/4.3).toFixed(1)} months</span>.</span>
+                    }
+                />
+
+                 {/* 3. CAPACITY */}
+                 <KPICard 
+                    icon={<Clock size={20} className="text-blue-600" />}
+                    title="Capacity Unlocked"
+                    value={annualHoursSaved}
+                    suffix="hrs/yr"
+                    isCurrency={false}
+                    color="text-blue-600"
+                    bottomLabel={
+                        <span>Repurposed <span className="font-bold text-zinc-800 dark:text-white">{(annualHoursSaved / 2080).toFixed(1)} FTEs</span> to strategy.</span>
+                    }
+                />
+
+                {/* 4. TOTAL INVESTMENT */}
+                <KPICard 
+                    icon={<DollarSign size={20} className="text-zinc-600 dark:text-zinc-400" />}
+                    title="Total CapEx"
+                    value={totalBuildCost}
+                    prefix="$"
+                    isCurrency={true}
+                    color="text-zinc-800 dark:text-white"
+                    bottomLabel="Upfront fixed engineering cost."
+                />
             </div>
-            <div className="flex items-center gap-1.5 text-[10px] font-medium text-purple-600 dark:text-purple-400">
-                <Activity size={12} /> Optimization
-            </div>
-        </div>
+
+          </div>
       </div>
 
-      <div className="p-8">
-        
-        {/* 2. THE MATHEMATICAL MODEL */}
-        {/* We add \sum_{n=1}^{N} to represent scaling across 'N' people */}
-        <div className="text-xl md:text-3xl text-zinc-800 dark:text-zinc-100 overflow-x-auto py-4 flex justify-center">
-            <BlockMath math="R_{net} = \sum_{n=1}^{N} \int_{0}^{T} \left( C_{manual}(t) - \frac{V_{agent}(t)}{\eta_{eng}} \right) dt" />
-        </div>
+      {/* --- SECTION 3: EXPANDED ENGINEERING LOGIC (First Principles) --- */}
+      <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* LEFT: STEP-BY-STEP DERIVATION */}
+          <div className="lg:col-span-2 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-xl p-8 shadow-sm">
+             <div className="flex items-center gap-3 mb-8 pb-4 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-blue-600 dark:text-blue-400"><Calculator size={24} /></div>
+                <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Engineering Derivation</h3>
+             </div>
+             
+             <div className="space-y-10">
+                 
+                 {/* Step 1: Manual Cost */}
+                 <div className="relative pl-4 border-l-2 border-zinc-100 dark:border-zinc-800">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300">1</div>
+                    <h4 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-2">{'Manual Cost ($C_{manual}$)'}</h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                        We calculate the collective cost of the task by multiplying the headcount involved, the time they dedicate to the task, and their hourly cost to the company.
+                    </p>
+                    <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
+                         <div className="mb-4">
+                            <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-2">Formula</div>
+                            <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
+                                <InlineMath math="C_{manual} = N \times H \times \left( \frac{S_{annual}}{2080} \right)" />
+                            </div>
+                         </div>
+                         <p className="text-xs text-zinc-500 italic">
+                             *Where 2080 represents the standard work hours in a year (40hrs x 52wks).
+                         </p>
+                    </div>
+                 </div>
 
-        {/* 3. THE LAYMAN DEFINITION */}
-        <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800 text max-w-2xl mx-auto">
-            <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 leading-loose font-light">
-            "Net gains (<span className="text-zinc-900 dark:text-white font-medium"><InlineMath math="R_{net}" /></span>) 
-            are the measurable delta between manual process costs 
-            (<span className="text-zinc-900 dark:text-white font-medium"><InlineMath math="C_{manual}" /></span>) 
-            and optimized agentic output 
-            (<span className="text-zinc-900 dark:text-white font-medium"><InlineMath math="V_{agent}" /></span>), 
-            directly converting engineering efficiency 
-            (<span className="text-zinc-900 dark:text-white font-medium"><InlineMath math="\eta_{eng}" /></span>) 
-            into recognized revenue."
-            </p>
-            <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 leading-loose font-light">
-            Where "engineering efficiency" includes the initial investment, overhead to maintain, and any other hidden costs (e.g API token calls to LLMs)
-            </p>
-        </div>
+                 {/* Step 2: Auto Cost */}
+                 <div className="relative pl-4 border-l-2 border-zinc-100 dark:border-zinc-800">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-zinc-200 dark:bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-600 dark:text-zinc-300">2</div>
+                    <h4 className="text-lg font-bold text-zinc-800 dark:text-zinc-200 mb-2">{'Automated Cost ($C_{auto}$)'}</h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                        The cost of the automated solution is the sum of the initial engineering investment (Salary during build time) plus the ongoing infrastructure run cost (<InlineMath math="C_{cloud}" />).
+                    </p>
+                    <div className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div>
+                                <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-2">Initial Investment (Build)</div>
+                                <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
+                                    <InlineMath math="C_{build} = \left( \frac{S_{dev}}{52} \right) \times W_{weeks}" />
+                                </div>
+                                <p className="text-[10px] text-zinc-400 italic mt-2 leading-tight">
+                                    *Where 52 is the number of weeks in one year to normalize annual Salary to weekly.
+                                </p>
+                             </div>
+                             <div>
+                                <div className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide mb-2">Ongoing Run Cost</div>
+                                <div className="font-mono font-bold text-xl text-zinc-900 dark:text-zinc-100">
+                                    <InlineMath math="C_{run}(t) = C_{cloud} \times t" />
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                 </div>
+
+                 {/* Step 3: Break Even */}
+                 <div className="relative pl-4 border-l-2 border-blue-200 dark:border-blue-900">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center text-[10px] font-bold text-white">3</div>
+                    <h4 className="text-lg font-bold text-blue-700 dark:text-blue-400 mb-2">
+                        Solve for Break-Even (<InlineMath math="t_{break}" />)
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                        We equate <InlineMath math="C_{manual}" /> to <InlineMath math="C_{auto}" /> to find <strong><InlineMath math="t" /></strong>, which represents the number of times the calculation or task is repeated until the engineering investment is fully repaid.
+                    </p>
+                    <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800 rounded-xl p-6">
+                        
+                        <div className="space-y-6">
+                            {/* Line 0: Initiate Model */}
+                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-blue-100 dark:border-blue-800 pb-3">
+                                <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">0. Initiate Break-Even Model</span>
+                                <div className="font-mono font-bold text-lg text-blue-800 dark:text-blue-100">
+                                    <InlineMath math="C_{manual}(t) = C_{auto}(t)" />
+                                </div>
+                            </div>
+
+                            {/* Line 1: Equate / Expand */}
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-blue-100 dark:border-blue-800 pb-3">
+                                <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">1. Expand Cumulative Terms</span>
+                                <div className="font-mono font-bold text-lg text-blue-800 dark:text-blue-100">
+                                    <InlineMath math="C_{manual} \cdot t = C_{build} + C_{cloud} \cdot t" />
+                                </div>
+                            </div>
+
+                            {/* Line 2: Group Terms */}
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-blue-100 dark:border-blue-800 pb-3">
+                                <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">2. Isolate Variable (<InlineMath math="t" />)</span>
+                                <div className="font-mono font-bold text-lg text-blue-800 dark:text-blue-100">
+                                    <InlineMath math="t \cdot (C_{manual} - C_{cloud}) = C_{build}" />
+                                </div>
+                            </div>
+
+                            {/* Line 3: Final Solution */}
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                                <span className="text-xs font-bold text-blue-400 dark:text-blue-300 uppercase tracking-wide">3. Final Solution</span>
+                                <div className="font-mono font-bold text-2xl text-blue-600 dark:text-blue-400">
+                                    <InlineMath math="t_{break} = \frac{C_{build}}{C_{manual} - C_{cloud}}" />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                 </div>
+
+                 {/* Step 4: Profitable Case */}
+                 <div className="relative pl-4 border-l-2 border-emerald-200 dark:border-emerald-900">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] font-bold text-white">4</div>
+                    <h4 className="text-lg font-bold text-emerald-700 dark:text-emerald-400 mb-2">
+                        Case A: Profitable (<InlineMath math="C_{manual} > C_{cloud}" />)
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                        We compare the <strong>weekly</strong> cost of manual labor against the <strong>weekly</strong> cloud infrastructure cost. This assumes no further engineering maintenance is required beyond keeping the infrastructure running for each repeated calculation.
+                    </p>
+                    <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-xl p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div>
+                                <div className="text-xs font-bold text-emerald-600 dark:text-emerald-300 uppercase tracking-wide mb-2">Condition</div>
+                                <div className="font-mono font-bold text-lg text-emerald-800 dark:text-emerald-100">
+                                    <InlineMath math="\text{Savings} = C_{manual} - C_{cloud} > 0" />
+                                </div>
+                            </div>
+                            <div className="text-sm text-zinc-600 dark:text-zinc-300 italic border-l-2 border-emerald-200 dark:border-emerald-800 pl-4">
+                                Result: <InlineMath math="t_{break}" /> is a positive finite number. The graph lines intersect, creating a <span className="text-emerald-600 font-bold">Green</span> profit zone.
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+
+                 {/* Step 5: Unprofitable Case */}
+                 <div className="relative pl-4 border-l-2 border-rose-200 dark:border-rose-900">
+                    <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-rose-500 flex items-center justify-center text-[10px] font-bold text-white">5</div>
+                    <h4 className="text-lg font-bold text-rose-700 dark:text-rose-400 mb-2">
+                        Case B: Unprofitable (<InlineMath math="C_{manual} < C_{cloud}" />)
+                    </h4>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4 leading-relaxed max-w-2xl">
+                        If the Cloud Run Cost exceeds the Manual Cost, the denominator becomes negative. While mathematically this yields a negative time, in reality, it indicates that the automation is simply more expensive to operate than the manual process.
+                    </p>
+                    <div className="bg-rose-50 dark:bg-rose-900/10 border border-rose-100 dark:border-rose-800 rounded-xl p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div>
+                                <div className="text-xs font-bold text-rose-600 dark:text-rose-300 uppercase tracking-wide mb-2">Condition</div>
+                                <div className="font-mono font-bold text-lg text-rose-800 dark:text-rose-100">
+                                    <InlineMath math="t_{break} = \frac{C_{build}}{\text{Negative}} < 0" />
+                                </div>
+                            </div>
+                            <div className="text-sm text-zinc-600 dark:text-zinc-300 italic border-l-2 border-rose-200 dark:border-rose-800 pl-4">
+                                Conclusion: It is <span className="text-rose-600 font-bold">not worth</span> the initial investment to build, as the running costs alone exceed the manual value.
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+
+             </div>
+          </div>
+
+          {/* RIGHT: VARIABLES & ASSUMPTIONS */}
+          <div className="bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-xl p-8 shadow-sm flex flex-col gap-8">
+             
+             {/* Definitions */}
+             <div>
+                 <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><FileText size={20} /></div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Variable Legend</h3>
+                 </div>
+                 <div className="space-y-4">
+                    <VariableDef symbol="C" desc="Cost" />
+                    <VariableDef symbol="N" desc="Headcount (Employees)" />
+                    <VariableDef symbol="H" desc="Hours/Week dedicated to task" />
+                    <VariableDef symbol="S_{annual}" desc="Employee Annual Salary" />
+                    <VariableDef symbol="S_{dev}" desc="Developer Annual Salary" />
+                    <VariableDef symbol="W_{weeks}" desc="Development Time (Weeks)" />
+                    <VariableDef symbol="C_{cloud}" desc="Weekly Cloud Costs" />
+                    <VariableDef symbol="t" desc="Number of repeated calculations" />
+                 </div>
+             </div>
+
+             <div className="w-full h-px bg-zinc-100 dark:bg-zinc-800" />
+
+             {/* Assumptions */}
+             <div>
+                 <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><Info size={20} /></div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Modeling Assumptions</h3>
+                 </div>
+                 <ul className="space-y-4">
+                    <AssumptionItem text="You hire Thomas on the team to develop these software solutions at a $150,000 annual salary." />
+                    <AssumptionItem text="Standard work year is calculated at 2,080 hours (40hr/wk × 52wks) to derive hourly rates." />
+                    <AssumptionItem text="Zero-Ramp: Value is realized immediately upon deployment; no learning curve penalty is applied." />
+                    <AssumptionItem text="Run Costs assume standard cloud infrastructure services (e.g., AWS/Vercel) + API usage." />
+                </ul>
+             </div>
+
+             {/* Rationale for Initial Conditions (Styled like Assumptions) */}
+             <div>
+                 <div className="flex items-center gap-3 mb-6">
+                    <div className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-400"><Lightbulb size={20} /></div>
+                    <h3 className="text-lg font-bold text-zinc-900 dark:text-white">Rationale for Initial Conditions</h3>
+                 </div>
+                 <ul className="space-y-4">
+                    <AssumptionItem text="Run Cost ($2,500/wk): Enterprise Snowflake usage is highly variable but often centers on Compute Credits, Storage (TB/mo), and Cloud Services." />
+                    <AssumptionItem text="Enterprise Edition credits cost approx $3.00 - $4.50. A medium-sized workload typically incurs $1k - $5k+ weekly." />
+                    <AssumptionItem text="Cost Breakdown: 60-80% Compute (Active Warehouses), 10-20% Storage, 10-20% Services & Data Egress." />
+                </ul>
+             </div>
+
+          </div>
 
       </div>
     </div>
   );
 };
-export default ImpactEquation;
+
+// --- SUBCOMPONENTS ---
+
+const CleanInput = ({ label, val, set, min, max, step, unit }: any) => (
+    <div className="group">
+        <div className="flex justify-between items-end mb-1.5">
+            <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{label}</span>
+            <span className="font-mono text-xs font-bold text-zinc-800 dark:text-zinc-200 border-b border-zinc-200 dark:border-zinc-800 pb-0.5">
+                {val.toLocaleString()}{unit}
+            </span>
+        </div>
+        <input 
+            type="range" min={min} max={max} step={step} value={val} 
+            onChange={e => set(+e.target.value)} 
+            className="w-full h-1 bg-zinc-200 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-zinc-800 dark:accent-white hover:accent-blue-600 dark:hover:accent-blue-400 transition-colors" 
+        />
+    </div>
+);
+
+const KPICard = ({ icon, title, value, prefix, suffix, isCurrency, color, bottomLabel }: any) => (
+    <div className="flex flex-col h-full bg-white dark:bg-black p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-md transition-shadow">
+        <div className="flex-grow flex flex-col justify-center">
+            <div className="flex justify-between items-center mb-2">
+                <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{title}</div>
+                <div className="p-1.5 bg-zinc-50 dark:bg-zinc-800 rounded-lg">{icon}</div>
+            </div>
+            
+            <div className={`text-5xl lg:text-6xl font-black tracking-tighter leading-none ${color} mb-1`}>
+                {prefix}
+                <CountUp end={value} separator="," duration={0.8} decimals={isCurrency ? 0 : 1} />
+                {suffix && <span className="text-2xl text-zinc-400 ml-1 font-bold align-baseline">{suffix}</span>}
+            </div>
+        </div>
+        
+        <div className="pt-3 border-t border-zinc-50 dark:border-zinc-800 mt-auto">
+             <div className="text-sm text-zinc-500 dark:text-zinc-400 leading-snug">
+                {bottomLabel}
+             </div>
+        </div>
+    </div>
+);
+
+const VariableDef = ({ symbol, desc }: any) => (
+    <div className="flex items-center gap-4">
+        <span className="font-mono font-bold text-blue-600 dark:text-blue-400 text-sm w-12 text-center bg-blue-50 dark:bg-blue-900/20 rounded py-1 border border-blue-100 dark:border-blue-900/50 shrink-0">
+            <InlineMath math={symbol} />
+        </span>
+        <span className="text-sm text-zinc-600 dark:text-zinc-300">{desc}</span>
+    </div>
+);
+
+const AssumptionItem = ({ text }: { text: string }) => (
+    <li className="flex gap-3 items-start text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed">
+        <span className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600 mt-1.5 shrink-0" />
+        {text}
+    </li>
+);
+
+// --- GRAPH COMPONENT ---
+const ProfitLossGraph = ({ weeks, manualBurn, autoBurn, buildCost, breakEven }: any) => {
+    const width = 1000; 
+    const height = 300; 
+    const paddingBottom = 20; 
+    const graphHeight = height - paddingBottom;
+    
+    // Scaling
+    const maxManual = manualBurn * weeks;
+    const maxAuto = buildCost + (autoBurn * weeks);
+    const maxY = Math.max(maxManual, maxAuto) * 1.1; 
+
+    // Coord Helpers
+    const getY = (val: number) => graphHeight - ((val / maxY) * graphHeight);
+    const getX = (w: number) => (w / weeks) * width;
+
+    // Line Coords
+    const startY = graphHeight;
+    const manualEndY = getY(maxManual);
+    const autoStartY = getY(buildCost);
+    const autoEndY = getY(maxAuto);
+    const endX = width;
+
+    // Intersection
+    let crossX = 0;
+    let crossY = 0;
+    const hasIntersection = breakEven > 0 && breakEven < weeks;
+    
+    if (hasIntersection) {
+        crossX = getX(breakEven);
+        crossY = getY(manualBurn * breakEven);
+    }
+
+    // Font style for graph text
+    const textStyle = "text-[10px] font-bold font-sans";
+
+    // Generate minor tickers
+    const yearWidth = width / 3;
+    const minorTicks = [];
+    for(let yr = 0; yr < 3; yr++) {
+        // 3 minor ticks per year (quarters)
+        for(let q = 1; q < 4; q++) {
+            const x = (yr * yearWidth) + (q * (yearWidth / 4));
+            minorTicks.push(x);
+        }
+    }
+
+    return (
+        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full overflow-visible font-sans" preserveAspectRatio="none">
+             
+             {/* Base Grid */}
+             <line x1="0" y1={graphHeight} x2={width} y2={graphHeight} stroke="currentColor" strokeOpacity="0.1" strokeWidth="2" className="text-zinc-400" />
+             
+             {/* Minor Tickers (Quarterly) */}
+             {minorTicks.map((x, i) => (
+                 <line key={i} x1={x} y1={graphHeight} x2={x} y2={graphHeight - 5} stroke="currentColor" strokeOpacity="0.1" strokeWidth="1" className="text-zinc-300 dark:text-zinc-700" />
+             ))}
+
+             {/* Major Ticks (Years) */}
+             <line x1={width * 0.33} y1={graphHeight} x2={width * 0.33} y2={graphHeight + 5} stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" className="text-zinc-400" />
+             <line x1={width * 0.66} y1={graphHeight} x2={width * 0.66} y2={graphHeight + 5} stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" className="text-zinc-400" />
+
+             {/* --- AREAS --- */}
+             {hasIntersection ? (
+                 <>
+                    {/* RED (Investment Phase) */}
+                    <path d={`M 0,${startY} L ${crossX},${crossY} L ${crossX},${getY(buildCost + autoBurn * breakEven)} L 0,${autoStartY} Z`} className="fill-rose-50 dark:fill-rose-900/20" />
+                    {/* GREEN (Profit Phase) */}
+                    <path d={`M ${crossX},${crossY} L ${endX},${manualEndY} L ${endX},${autoEndY} L ${crossX},${crossY} Z`} className="fill-emerald-50 dark:fill-emerald-900/20" />
+                 </>
+             ) : (
+                manualBurn * weeks < buildCost + autoBurn * weeks ? (
+                     <path d={`M 0,${startY} L ${endX},${manualEndY} L ${endX},${autoEndY} L 0,${autoStartY} Z`} className="fill-rose-50 dark:fill-rose-900/20" />
+                ) : (
+                    <path d={`M 0,${startY} L ${endX},${manualEndY} L ${endX},${autoEndY} L 0,${autoStartY} Z`} className="fill-emerald-50 dark:fill-emerald-900/20" />
+                )
+             )}
+
+            {/* --- LINES --- */}
+            {/* Manual (Red/Grey) */}
+            <path d={`M 0,${startY} L ${endX},${manualEndY}`} fill="none" stroke="#e11d48" strokeWidth="2" strokeDasharray="4,4" />
+            <text x={endX - 10} y={manualEndY - 10} textAnchor="end" className="text-[10px] font-bold fill-rose-600 uppercase tracking-wider">Manual</text>
+
+            {/* Agentic (Blue) */}
+            <path d={`M 0,${autoStartY} L ${endX},${autoEndY}`} fill="none" stroke="#2563eb" strokeWidth="3" />
+            <text x={endX - 10} y={autoEndY - 10} textAnchor="end" className="text-[10px] font-bold fill-blue-600 uppercase tracking-wider">Agentic</text>
+
+            {/* --- X AXIS LABELS (Time) --- */}
+            <text x={0} y={height} className="text-[10px] font-bold fill-zinc-400 uppercase">Start</text>
+            <text x={width * 0.33} y={height} textAnchor="middle" className="text-[10px] font-bold fill-zinc-400 uppercase">Year 1</text>
+            <text x={width * 0.66} y={height} textAnchor="middle" className="text-[10px] font-bold fill-zinc-400 uppercase">Year 2</text>
+            <text x={width} y={height} textAnchor="end" className="text-[10px] font-bold fill-zinc-400 uppercase">Year 3</text>
+
+            {/* --- BREAK EVEN MARKER --- */}
+            {hasIntersection && (
+                <g>
+                    <circle cx={crossX} cy={crossY} r="4" fill="#10b981" stroke="white" strokeWidth="2" />
+                    <line x1={crossX} y1={crossY} x2={crossX} y2={graphHeight} stroke="#10b981" strokeWidth="1" strokeDasharray="3,3" />
+                    <text x={crossX} y={graphHeight - 10} textAnchor="middle" className="text-[10px] font-bold fill-emerald-600 bg-white dark:bg-black p-1">Break-Even</text>
+                </g>
+            )}
+        </svg>
+    )
+}
+
+export default ROICalculation;
