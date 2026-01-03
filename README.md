@@ -53,7 +53,7 @@ As of Dec 2025, I have taken on reaching out to protein academics to support Gen
 
 ## Summary of System Architecture: ETL & Data Flow
 
-This diagram illustrates the automated pipeline moving data from external sources into Github "datbase folder" for accumulated (semantic) pre-processing of raw data from sandbox, test, to product with raw, staging, transform, and analyze layers before moving enviornments to Server-side database, Vercel Edge Config for low-latency frontend access.
+This diagram illustrates the automated pipeline moving data from external sources into Github "database folder" for accumulated (semantic) pre-processing of raw data from sandbox, test, to product with raw, staging, transform, and analyze layers before moving enviornments to Server-side database, Vercel Edge Config for low-latency frontend access.
 
 ### System Design Conclusions
 * 30 minute CRON frequency [See KPIs](markdown/architecture.md#system-design-key-performance-indicators-kpi)
